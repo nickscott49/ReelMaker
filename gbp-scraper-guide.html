@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GBP Review Scraper — Installation &amp; Usage Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue:     #1a73e8;
+    --blue-dk:  #1558b0;
+    --blue-lt:  #e8f0fe;
+    --blue-txt: #174ea6;
+    --green:    #1e8e3e;
+    --green-lt: #e6f4ea;
+    --amber-lt: #fef3c7;
+    --amber-txt:#78350f;
+    --text:     #202124;
+    --muted:    #5f6368;
+    --border:   #e0e0e0;
+    --bg:       #f8f9fa;
+    --radius:   10px;
+    --radius-sm:6px;
+  }
+
+  body {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    color: var(--text);
+    background: #f0f4f8;
+    min-height: 100vh;
+    padding: 2rem 1rem 4rem;
+  }
+
+  .page-wrap {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  /* ── Header ── */
+  .guide-header {
+    background: var(--blue);
+    border-radius: var(--radius);
+    padding: 2rem 2rem 1.75rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .guide-header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    pointer-events: none;
+  }
+
+  .guide-header::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; right: 60px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+    pointer-events: none;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(255,255,255,0.18);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 11px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+
+  .guide-header h1 {
+    font-size: 26px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 6px;
+    position: relative;
+  }
+
+  .guide-header p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.82);
+    line-height: 1.6;
+    position: relative;
+    max-width: 480px;
+  }
+
+  /* ── Progress bar ── */
+  .progress-track {
+    height: 4px;
+    background: #dde3ed;
+    border-radius: 2px;
+    margin-bottom: 1.75rem;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--blue);
+    border-radius: 2px;
+    transition: width 0.35s ease;
+  }
+
+  /* ── Section labels ── */
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+    padding-left: 4px;
+  }
+
+  .steps-group { margin-bottom: 2rem; }
+
+  /* ── Step cards ── */
+  .step-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.25rem 1.25rem 1rem;
+    margin-bottom: 10px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  .step-card:hover { border-color: #b0c4e8; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+  .step-card.active {
+    border-color: var(--blue);
+    border-width: 1.5px;
+    box-shadow: 0 2px 8px rgba(26,115,232,0.1);
+  }
+
+  .step-num {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--blue-lt);
+    color: var(--blue);
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .step-card.active .step-num { background: var(--blue); color: #fff; }
+  .step-card.done .step-num   { background: var(--green-lt); color: var(--green); }
+
+  .step-body { flex: 1; min-width: 0; }
+
+  .step-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .step-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .toggle-arrow {
+    font-size: 11px;
+    color: var(--muted);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+
+  .step-card.active .toggle-arrow { transform: rotate(180deg); }
+
+  .step-detail {
+    display: none;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  .step-card.active .step-detail { display: block; }
+
+  /* ── Connectors ── */
+  .connector {
+    width: 1px;
+    height: 10px;
+    background: var(--border);
+    margin: 0 0 10px 28px;
+  }
+
+  /* ── Screen mockups ── */
+  .screen-mock {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-size: 13px;
+    margin-top: 10px;
+    font-family: 'DM Mono', monospace;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .screen-mock .label {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--text);
+    margin-bottom: 5px;
+    display: block;
+  }
+
+  .screen-mock .path { color: var(--blue); font-weight: 500; }
+
+  .highlight {
+    background: #fef3c7;
+    color: #92400e;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  code {
+    font-family: 'DM Mono', monospace;
+    font-size: 11.5px;
+    background: rgba(0,0,0,0.06);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: var(--text);
+  }
+
+  /* ── Tips and warnings ── */
+  .tip, .warn {
+    border-radius: var(--radius-sm);
+    padding: 10px 13px;
+    font-size: 13px;
+    line-height: 1.55;
+    margin-top: 10px;
+    display: flex;
+    gap: 9px;
+    align-items: flex-start;
+  }
+
+  .tip  { background: var(--blue-lt);  color: var(--blue-txt); }
+  .warn { background: var(--amber-lt); color: var(--amber-txt); }
+
+  .tip-icon { flex-shrink: 0; }
+
+  /* ── Chrome mockup ── */
+  .chrome-bar {
+    background: #dee1e6;
+    border-radius: 6px 6px 0 0;
+    padding: 8px 10px 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .chrome-dots { display: flex; gap: 4px; }
+  .chrome-dot { width: 9px; height: 9px; border-radius: 50%; }
+  .dot-r { background: #ff6057; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+
+  .chrome-url {
+    flex: 1;
+    background: #fff;
+    border-radius: 10px;
+    padding: 3px 12px;
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    color: #444;
+  }
+
+  .chrome-body {
+    background: #f1f3f4;
+    border: 1px solid #dee1e6;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    padding: 12px;
+    font-size: 12px;
+    color: #666;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  /* ── Toggle switch ── */
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 9px 12px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .toggle-switch {
+    width: 34px; height: 20px;
+    background: var(--blue);
+    border-radius: 10px;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .toggle-switch::after {
+    content: '';
+    position: absolute;
+    right: 3px; top: 3px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: #fff;
+  }
+
+  /* ── Buttons ── */
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+
+  .btn-mock {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--blue);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .btn-mock.outline {
+    background: transparent;
+    color: var(--blue);
+    border: 1px solid var(--blue);
+  }
+
+  /* ── Steps indicator ── */
+  .steps-indicator {
+    display: flex;
+    justify-content: space-between;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-size: 11px;
+    color: var(--muted);
+    gap: 4px;
+    margin-top: 10px;
+  }
+
+  .ind-step { text-align: center; flex: 1; }
+
+  .ind-dot {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 5px;
+  }
+
+  .ind-dot.done  { background: var(--blue);     color: #fff; }
+  .ind-dot.current { background: var(--blue-lt); color: var(--blue); border: 1.5px solid var(--blue); }
+  .ind-dot.todo  { background: #fff; color: var(--muted); border: 1.5px solid var(--border); }
+
+  /* ── Navigation ── */
+  .nav-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 1.5rem;
+  }
+
+  .nav-btn {
+    flex: 1;
+    padding: 11px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: #fff;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .nav-btn:hover { background: var(--bg); border-color: #b0c4e8; }
+
+  .nav-btn.primary {
+    background: var(--blue);
+    color: #fff;
+    border-color: var(--blue);
+  }
+
+  .nav-btn.primary:hover { background: var(--blue-dk); border-color: var(--blue-dk); }
+
+  /* ── Done state ── */
+  .done-state {
+    display: none;
+    text-align: center;
+    padding: 3rem 2rem;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .done-circle {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: var(--green-lt);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 30px;
+  }
+
+  .done-state h2 { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
+
+  .done-state p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.65;
+    max-width: 380px;
+    margin: 0 auto 20px;
+  }
+
+  /* ── Ordered list inside steps ── */
+  .step-ol {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 2.1;
+    padding-left: 20px;
+    margin-top: 8px;
+  }
+
+  .step-ol strong { font-weight: 500; color: var(--text); }
+
+  p.step-p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+
+  p.step-p:last-child { margin-bottom: 0; }
+
+  .download-banner {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .download-banner-text strong {
+    display: block;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+
+  .download-banner-text span {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .download-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--blue);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .download-link:hover { background: var(--blue-dk); }
+</style>
+</head>
+<body>
+
+<div class="page-wrap">
+
+  <div class="guide-header">
+    <div class="badge">📋 Step-by-step guide</div>
+    <h1>GBP Review Scraper</h1>
+    <p>Install the Chrome extension and export Google Business reviews to a CSV file — no technical experience needed.</p>
+  </div>
+
+  <div class="download-banner">
+    <div class="download-banner-text">
+      <strong>Step 1 — Download the extension</strong>
+      <span>Click the button to download the zip file to your computer.</span>
+    </div>
+    <a class="download-link" href="https://nickscott49.github.io/ReelMaker/gbp-review-scraper.zip" download>
+      ⬇ Download ZIP
+    </a>
+  </div>
+
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill" style="width: 10%"></div>
+  </div>
+
+  <div id="mainContent">
+
+    <!-- PART 1 -->
+    <div class="section-label">Part 1 — Installation</div>
+    <div class="steps-group">
+
+      <div class="step-card active" id="step-1" onclick="toggleStep(1)">
+        <div class="step-num" id="num-1">1</div>
+        <div class="step-body">
+          <div class="step-title">
+            Download the extension file
+            <span class="toggle-arrow">▼</span>
+          </div>
+          <div class="step-desc">Get the zip file containing the extension.</div>
+          <div class="step-detail">
+            <p class="step-p">Click the <strong>Download ZIP</strong> button at the top of this page. Save the file somewhere easy to find — your Desktop or Downloads folder is ideal.</p>
+            <div class="tip">
+              <span class="tip-icon">💡</span>
+              <span>Once downloaded, leave the file where it is for now — the next step will walk you through unzipping it.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="connector"></div>
+
+      <div class="step-card" id="step-2" onclick="toggleStep(2)">
+        <div class="step-num" id="num-2">2</div>
+        <div class="step-body">
+          <div class="step-title">
+            Unzip the file
+            <span class="toggle-arrow">▼</span>
+          </div>
+          <div class="step-desc">Extract the folder from the zip file.</div>
+          <div class="step-detail">
+            <p class="step-p">Find the downloaded file and unzip it:</p>
+            <div class="screen-mock">
+              <span class="label">On Windows</span>
+              Right-click <span class="path">gbp-review-scraper.zip</span> → <span class="highlight">Extract All</span> → click Extract
+            </div>
+            <div class="screen-mock">
+              <span class="label">On Mac</span>
+              Double-click <span class="path">gbp-review-scraper.zip</span> — it extracts automatically
+            </div>
+            <div class="tip" style="margin-top:10px;">
+              <span class="tip-icon">💡</span>
+              <span>You'll end up with a folder called <strong>gbp-scraper</strong>. Keep this folder somewhere permanent — Chrome needs to be able to find it every time.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="connector"></div>
+
+      <div class="step-card" id="step-3" onclick="toggleStep(3)">
+        <div class="step-num" id="num-3">3</div>
+        <div class="step-body">
+          <div class="step-title">
+            Open Chrome's extensions page
+            <span class="toggle-arrow">▼</span>
+          </div>
+          <div class="step-desc">Navigate to where Chrome manages extensions.</div>
+          <div class="step-detail">
+            <p class="step-p">In Chrome, click the address bar at the top, type the address below exactly, and press Enter:</p>
+            <div class="chrome-bar">
+              <div class="chrome-dots">
+                <div class="chrome-dot dot-r"></div>
+                <div class="chrome-dot dot-y"></div>
+                <div class="chrome-dot dot-g"></div>
+              </div>
+              <div class="chrome-url">chrome://extensions</div>
+            </div>
+            <div class="chrome-body">The Extensions management page will open here.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="connector"></div>
+
+      <div class="step-card" id="step-4" onclick="toggleStep(4)">
+        <div class="step-num" id="num-4">4</div>
+        <div class="step-body">
+          <div class="step-title">
+            Turn on Developer mode
+            <span class="toggle-arrow">▼</span>
+          </div>
+          <div class="step-desc">Required to load extensions from your own computer.</div>
+          <div class="step-detail">
+            <p class="step-p">On the extensions page, look for <strong>Developer mode</strong> in the top-right corner. Click the toggle to switch it on — it turns blue when active.</p>
+            <div style="background: var(--bg); border-radius: var(--radius-sm); padding: 10px;">
+              <div class="toggle-row">
+                <span>Developer mode</span>
+                <div class="toggle-switch"></div>
+              </div>
+            </div>
+            <div class="warn">
+              <span class="tip-icon">⚠️</span>
+              <span>Don't worry — this is safe. Developer mode simply allows you to load extensions from your computer instead of only the Chrome Web Store.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="connector"></div>
+
+      <div class="step-card" id="step-5" onclick="toggleStep(5)">
+        <div class="step-num" id="num-5">5</div>
+        <div class="step-body">
+          <div class="step-title">
+            Load the extension
+            <span class="toggle-arrow">▼</span>
+          </div>
+          <div class="step-desc">Point Chrome to the folder you unzipped.</div>
+          <div class="step-detail">
+            <p class="step-p">After turning on Developer mode, three new buttons appear at the top of the page. Click <strong>Load unpacked</strong>:</p>
+            <div class="btn-row">
+              <div class="btn-mock">Load unpacked</div>
+              <div class="btn-mock outline">Pack extension</div>
+              <div class="btn-mock outline">Update</div>
+            </div>
+            <p class="step-p" style="margin-top:12px;">A file browser window will open. Navigate to the <strong>gbp-scraper</strong> folder (the one you unzipped) and select it. Then click <strong>Select Folder</strong> (Windows) or <strong>Open</strong> (Mac).</p>
+            <div class="tip">
+              <span class="tip-icon">💡</span>
+              <span>Select the <em>folder itself</em>, not a file inside it. The correct folder contains files named <code>manifest.json</code>, <code>content.js</code>, and others.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="connector"></div>
+
+      <div class="step-card" id="step-6" onclick="toggleStep(6)">
+        <div class="step-num" id="num-6">6</div>
+        <div class="step-body">
+          <div class="step-title">
+            Pin the extension to your toolbar
+            <span class="toggle-arrow">▼</span>
+          </div>
+          <div class="step-desc">So the icon is always visible and easy to click.</div>
+          <div class="step-detail">
+            <p class="step-p">The extension is now installed. To make the icon visible in your toolbar at all times:</p>
+            <ol class="step-ol">
+              <li>Click the <strong>puzzle piece icon 🧩</strong> in the top-right corner of Chrome</li>
+              <li>Find <strong>GBP Review Scraper</strong> in the list</li>
+              <li>Click the <strong>pin icon 📌</strong> next to it</li>
+            </ol>
+            <p class="step-p" style="margin-top:10px;">The extension icon will now appear in your Chrome toolbar on every page.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PART 2 -->
+    <div class="section-label">Part 2 — Using the extension</div>
+    <div class="steps-group">
+
+      <div class="step-card" id="step-7" onclick="toggleStep(7)">
+        <div class="step-num" id="num-7">7</div>
+        <div class="step-body">
+          <div class="step-title">
+            Go to a Google Business listing
+            <span class="toggle-arrow">▼</span>
+          </div>
+          <div class="step-desc">Find the business you want to scrape reviews for.</div>
+          <div class="step-detail">
+            <p class="step-p">The extension works on two types of Google pages:</p>
+            <div class="screen-mock">
+              <span class="label">Option A — Google Search</span>
+              Search for a business (e.g. <span class="path">Costa Coffee Manchester</span>) — the business info panel with reviews should appear on the right side of the results page.
+            </div>
+            <div class="screen-mock">
+              <span class="label">Option B — Google Maps</span>
+              Go to <span class="path">maps.google.com</span>, search for the business and click on it to open the listing in the left sidebar.
+            </div>
+            <div class="warn" style="margin-top:10px;">
+              <span class="tip-icon">⚠️</span>
+              <span>Make sure the page has fully loaded before clicking the extension icon. Wait until the reviews are visible on screen.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="connector"></div>
+
+      <div class="step-card" id="step-8" onclick="toggleStep(8)">
+        <div class="step-num" id="num-8">8</div>
+        <div class="step-body">
+          <div class="step-title">
+            Click the extension icon
+            <span class="toggle-arrow">▼</span>
+          </div>
+          <div class="step-desc">Start the scrape with a single click.</div>
+          <div class="step-detail">
+            <p class="step-p">Click the <strong>GBP Review Scraper icon</strong> in your Chrome toolbar. A panel will open on the right side of the screen and scraping begins automatically — you don't need to do anything else.</p>
+            <div class="tip">
+              <span class="tip-icon">💡</span>
+              <span>The extension handles everything automatically: clicking the Reviews tab, sorting by newest, scrolling to load all reviews, and expanding any truncated text.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="connector"></div>
+
+      <div class="step-card" id="step-9" onclick="toggleStep(9)">
+        <div class="step-num" id="num-9">9</div>
+        <div class="step-body">
+          <div class="step-title">
+            Wait for it to finish
+            <span class="toggle-arrow">▼</span>
+          </div>
+          <div class="step-desc">Watch the progress bar in the side panel.</div>
+          <div class="step-detail">
+            <p class="step-p">The side panel shows a progress bar and five steps. Each step lights up as the extension completes it:</p>
+            <div class="steps-indicator">
+              <div class="ind-step"><div class="ind-dot done">✓</div>Reviews tab</div>
+              <div class="ind-step"><div class="ind-dot done">✓</div>Sort</div>
+              <div class="ind-step"><div class="ind-dot current">3</div>Load all</div>
+              <div class="ind-step"><div class="ind-dot todo">4</div>Expand</div>
+              <div class="ind-step"><div class="ind-dot todo">5</div>Extract</div>
+            </div>
+            <div class="tip" style="margin-top:10px;">
+              <span class="tip-icon">⏱️</span>
+              <span>A business with 50 reviews takes roughly 30 seconds. 500+ reviews may take 2–3 minutes. Don't switch away from the tab while it's running.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="connector"></div>
+
+      <div class="step-card" id="step-10" onclick="toggleStep(10)">
+        <div class="step-num" id="num-10">10</div>
+        <div class="step-body">
+          <div class="step-title">
+            Download the CSV file
+            <span class="toggle-arrow">▼</span>
+          </div>
+          <div class="step-desc">Save your reviews as a spreadsheet-ready file.</div>
+          <div class="step-detail">
+            <p class="step-p">When scraping finishes, a preview table of reviews appears in the side panel and a blue <strong>Download CSV</strong> button appears at the bottom. Click it to save the file to your Downloads folder.</p>
+            <p class="step-p">The CSV file can be opened directly in:</p>
+            <ol class="step-ol">
+              <li><strong>Microsoft Excel</strong> — double-click the file to open</li>
+              <li><strong>Google Sheets</strong> — go to sheets.google.com → File → Import → Upload the CSV</li>
+              <li><strong>Numbers (Mac)</strong> — double-click the file to open</li>
+            </ol>
+            <div class="tip" style="margin-top:10px;">
+              <span class="tip-icon">📊</span>
+              <span>The file contains 5 columns: reviewer name, star rating, date, review text, and any owner response.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="nav-row">
+      <button class="nav-btn" id="prevBtn" onclick="prevStep()">← Previous</button>
+      <button class="nav-btn primary" id="nextBtn" onclick="nextStep()">Next step →</button>
+    </div>
+
+  </div><!-- /mainContent -->
+
+  <div class="done-state" id="doneState">
+    <div class="done-circle">✅</div>
+    <h2>You're all set!</h2>
+    <p>The extension is installed and ready to use. Navigate to any Google Business listing on Google Search or Google Maps and click the icon to start scraping reviews.</p>
+    <button class="nav-btn" style="max-width:220px; margin:0 auto; display:block;" onclick="restartGuide()">← Back to start</button>
+  </div>
+
+</div><!-- /page-wrap -->
+
+<script>
+  const TOTAL = 10;
+  let current = 1;
+
+  function goToStep(n) {
+    for (let i = 1; i <= TOTAL; i++) {
+      const card = document.getElementById('step-' + i);
+      const num  = document.getElementById('num-' + i);
+      if (!card) continue;
+
+      card.classList.remove('active', 'done');
+
+      if (i < n) {
+        card.classList.add('done');
+        num.textContent = '✓';
+      } else {
+        num.textContent = i;
+      }
+
+      if (i === n) card.classList.add('active');
+    }
+
+    current = n;
+
+    const pct = Math.round((n / TOTAL) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+
+    const target = document.getElementById('step-' + n);
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function toggleStep(n) {
+    if (n !== current) goToStep(n);
+  }
+
+  function nextStep() {
+    if (current < TOTAL) {
+      goToStep(current + 1);
+    } else {
+      document.getElementById('mainContent').style.display = 'none';
+      document.getElementById('doneState').style.display = 'block';
+      document.getElementById('progressFill').style.width = '100%';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  function prevStep() {
+    if (current > 1) goToStep(current - 1);
+  }
+
+  function restartGuide() {
+    document.getElementById('doneState').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+    goToStep(1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  goToStep(1);
+</script>
+
+</body>
+</html>
