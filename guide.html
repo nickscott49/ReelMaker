@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Scotland Overland — Reel Maker User Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --forest:#1c2b22;
+  --moss:#4a7c59;
+  --sage:#a8c8a0;
+  --gold:#b8860b;
+  --cream:#f5f0e8;
+  --parchment:#ede5d4;
+  --ink:#1a1a1a;
+  --mist:#6b7c6e;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Source Sans 3',sans-serif;
+  background:var(--cream);
+  color:var(--ink);
+  font-size:16px;
+  line-height:1.7;
+}
+
+/* ── Header ── */
+.hero{
+  background:var(--forest);
+  color:var(--cream);
+  padding:60px 40px 50px;
+  position:relative;
+  overflow:hidden;
+}
+.hero::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 40px,
+    rgba(255,255,255,.02) 40px,
+    rgba(255,255,255,.02) 41px
+  );
+}
+.hero-inner{max-width:780px;margin:0 auto;position:relative}
+.hero-label{
+  font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--sage);font-weight:600;margin-bottom:18px;
+}
+.hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,5vw,3.4rem);
+  line-height:1.15;
+  color:#fff;
+  margin-bottom:18px;
+}
+.hero h1 em{color:var(--sage);font-style:italic}
+.hero-sub{
+  font-size:17px;color:rgba(245,240,232,.75);
+  font-weight:300;max-width:520px;
+}
+.hero-tag{
+  display:inline-block;margin-top:28px;
+  background:rgba(168,200,160,.15);border:1px solid rgba(168,200,160,.3);
+  color:var(--sage);font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+  padding:6px 16px;border-radius:999px;font-weight:600;
+}
+
+/* ── Layout ── */
+.page{max-width:780px;margin:0 auto;padding:0 24px}
+
+/* ── TOC ── */
+.toc{
+  background:var(--parchment);
+  border-left:3px solid var(--moss);
+  border-radius:0 8px 8px 0;
+  padding:28px 32px;
+  margin:48px 0 0;
+}
+.toc-title{
+  font-family:'Playfair Display',serif;
+  font-size:13px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--mist);margin-bottom:14px;
+}
+.toc ol{padding-left:20px}
+.toc li{margin-bottom:6px}
+.toc a{
+  color:var(--moss);text-decoration:none;font-size:14px;font-weight:500;
+}
+.toc a:hover{text-decoration:underline;}
+
+/* ── Sections ── */
+.section{padding:52px 0 0}
+.section-num{
+  font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--moss);font-weight:600;margin-bottom:10px;
+}
+.section h2{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.4rem,3vw,2rem);
+  color:var(--forest);line-height:1.25;margin-bottom:20px;
+}
+.section p{margin-bottom:14px;color:#2a2a2a}
+.section p:last-child{margin-bottom:0}
+
+/* ── Steps ── */
+.steps{
+  display:flex;flex-direction:column;gap:0;
+  margin:28px 0;
+  border:1px solid #ddd6c6;border-radius:10px;overflow:hidden;
+}
+.step{
+  display:grid;grid-template-columns:48px 1fr;
+  border-bottom:1px solid #ddd6c6;
+}
+.step:last-child{border-bottom:none}
+.step-num{
+  background:var(--forest);color:var(--sage);
+  font-family:'Playfair Display',serif;font-size:18px;
+  display:flex;align-items:flex-start;justify-content:center;
+  padding-top:20px;font-weight:700;
+}
+.step-body{
+  padding:18px 22px;background:#fff;
+}
+.step-body strong{
+  display:block;font-size:14px;font-weight:600;
+  color:var(--forest);margin-bottom:5px;letter-spacing:.01em;
+}
+.step-body p{font-size:14px;color:#444;margin:0}
+
+/* ── Tips ── */
+.tip-box{
+  background:rgba(74,124,89,.08);
+  border:1px solid rgba(74,124,89,.2);
+  border-radius:8px;padding:18px 22px;
+  margin:24px 0;
+  font-size:14px;color:#2a3a2e;
+}
+.tip-box strong{color:var(--moss);display:block;margin-bottom:6px;font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+
+.warn-box{
+  background:rgba(184,134,11,.07);
+  border:1px solid rgba(184,134,11,.25);
+  border-radius:8px;padding:18px 22px;
+  margin:24px 0;
+  font-size:14px;color:#3a2e10;
+}
+.warn-box strong{color:var(--gold);display:block;margin-bottom:6px;font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+
+/* ── Feature grid ── */
+.feature-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;
+  margin:28px 0;
+}
+@media(max-width:540px){.feature-grid{grid-template-columns:1fr}}
+.feature-card{
+  background:#fff;border:1px solid #ddd6c6;border-radius:8px;
+  padding:18px 20px;
+}
+.feature-card .icon{font-size:22px;margin-bottom:10px}
+.feature-card strong{display:block;font-size:14px;font-weight:600;color:var(--forest);margin-bottom:5px}
+.feature-card p{font-size:13px;color:#555;margin:0;line-height:1.55}
+
+/* ── Inline code / kbd ── */
+kbd{
+  background:var(--forest);color:var(--sage);
+  font-size:12px;padding:2px 8px;border-radius:4px;
+  font-family:'Courier New',monospace;letter-spacing:.02em;
+}
+code{
+  background:#e8e2d8;color:var(--forest);
+  font-size:13px;padding:1px 6px;border-radius:3px;
+  font-family:'Courier New',monospace;
+}
+
+/* ── Divider ── */
+.div{
+  border:none;border-top:1px solid #ddd6c6;
+  margin:52px 0 0;
+}
+
+/* ── Footer ── */
+footer{
+  background:var(--forest);color:rgba(245,240,232,.5);
+  text-align:center;padding:36px 24px;margin-top:72px;
+  font-size:13px;
+}
+footer strong{color:var(--sage)}
+
+/* ── Tab labels ── */
+.tab-label{
+  display:inline-block;background:var(--forest);color:var(--sage);
+  font-size:12px;font-weight:600;padding:3px 10px;border-radius:4px;
+  letter-spacing:.04em;vertical-align:middle;
+}
+
+/* ── Section separator line ── */
+.section::before{
+  content:'';display:block;height:1px;
+  background:linear-gradient(to right,var(--moss),transparent);
+  margin-bottom:32px;opacity:.3;
+}
+.section:first-of-type::before{display:none}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-label">User Guide</div>
+    <h1>Scotland Overland<br/><em>Reel Maker</em></h1>
+    <p class="hero-sub">Everything you need to know to create stunning Instagram Reels with your real customer reviews and Land Rover photography.</p>
+    <span class="hero-tag">Complete guide · All features covered</span>
+  </div>
+</div>
+
+<div class="page">
+
+  <nav class="toc">
+    <div class="toc-title">Contents</div>
+    <ol>
+      <li><a href="#overview">What the app does</a></li>
+      <li><a href="#getting-started">Getting started</a></li>
+      <li><a href="#importing-reviews">Importing your reviews</a></li>
+      <li><a href="#managing-reviews">Managing the review list</a></li>
+      <li><a href="#photos">Adding your photos</a></li>
+      <li><a href="#styling">Styling your Reel</a></li>
+      <li><a href="#positioning">Positioning the image</a></li>
+      <li><a href="#saving">Generating and saving your Reel</a></li>
+      <li><a href="#workflow">Recommended workflow</a></li>
+      <li><a href="#tips">Tips for great Reels</a></li>
+    </ol>
+  </nav>
+
+  <!-- 1 -->
+  <div class="section" id="overview">
+    <div class="section-num">01</div>
+    <h2>What the app does</h2>
+    <p>The Scotland Overland Reel Maker lets you combine your real customer reviews with your own Land Rover photography to create professional-looking Instagram Reel frames — ready to post in seconds, with no design software needed.</p>
+    <p>Each Reel is exported as a full <strong>1080 × 1920px PNG image</strong> (the correct size for Instagram Reels and Stories). You choose the photo, pick a review, adjust the styling, and save.</p>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="icon">📋</div>
+        <strong>Import reviews</strong>
+        <p>Load reviews from the Google scraper CSV, paste them manually, or bulk-paste multiple at once.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">🖼</div>
+        <strong>Upload photos</strong>
+        <p>Add as many Land Rover photos as you like and switch between them with a click.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">✏️</div>
+        <strong>Edit everything</strong>
+        <p>Shorten review text, correct names, adjust stars — all editable before saving.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">🎨</div>
+        <strong>Style controls</strong>
+        <p>Adjust overlay darkness, text size, quote position, website URL size, and overlay colour.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">🔍</div>
+        <strong>Reposition image</strong>
+        <p>Drag the photo to frame your shot perfectly, zoom in, and nudge with arrow buttons.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">💾</div>
+        <strong>Save instantly</strong>
+        <p>Generate the Reel image and right-click to save — no downloads, no accounts, no cost.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2 -->
+  <div class="section" id="getting-started">
+    <div class="section-num">02</div>
+    <h2>Getting started</h2>
+    <p>Open the app in any modern browser (Chrome, Firefox, Safari, or Edge). No login or installation is required. The app runs entirely in your browser — nothing is uploaded to any server.</p>
+    <p>The screen is split into two columns. The <strong>left column</strong> is where you manage reviews and photos. The <strong>right column</strong> is where you style and preview your Reel.</p>
+
+    <div class="tip-box">
+      <strong>💡 Good to know</strong>
+      The app uses no AI tokens and requires no Claude account. It works completely offline once the page has loaded — your photos and review text never leave your computer.
+    </div>
+  </div>
+
+  <!-- 3 -->
+  <div class="section" id="importing-reviews">
+    <div class="section-num">03</div>
+    <h2>Importing your reviews</h2>
+    <p>There are three ways to get reviews into the app. Choose the one that suits your situation.</p>
+
+    <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--forest);margin:28px 0 12px">Option A — CSV file <span style="font-size:12px;font-weight:400;color:var(--mist)">(recommended)</span></h3>
+    <p>If you use the <strong>SEO Saijo Google Business Profile Review Scraper</strong> Chrome extension, it exports a <code>.csv</code> file with all your Google reviews including names, star ratings, dates and full text.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Run the extension on your Google Business listing</strong>
+          <p>Navigate to your Google Maps or Google Search business page and activate the extension. It will scroll, expand, and extract all reviews automatically.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Save the exported CSV file</strong>
+          <p>The extension will download a file named something like <code>seo-saijo_reviews_reviews_2026-05-17.csv</code>. Save it somewhere you can find it.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Click the CSV file tab in the app</strong>
+          <p>In the "Add reviews" section, click the <span class="tab-label">CSV file</span> tab, then click the upload area and select your file.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <strong>Review the preview and remove any you don't want</strong>
+          <p>Each review appears in a list. Click <kbd>×</kbd> next to any you want to remove before adding. Blank reviews are skipped automatically.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <strong>Click "Add X reviews to list"</strong>
+          <p>All remaining reviews are loaded into your queue, ready to use.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--forest);margin:28px 0 12px">Option B — Single paste</h3>
+    <p>For adding one review at a time. Click the <span class="tab-label">Single</span> tab, paste any review text into the box. The app will try to detect the reviewer name and star rating automatically. You can correct them manually before clicking <strong>Add to list</strong>.</p>
+    <p>This also works if you paste a single CSV-formatted row directly from the extension file, for example: <code>"Rob","Rated 5.0 out of 5","a month ago","Great experience!",""</code></p>
+
+    <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--forest);margin:28px 0 12px">Option C — Bulk paste</h3>
+    <p>Click the <span class="tab-label">Bulk paste</span> tab and paste multiple reviews at once. The parser will attempt to split them into individual entries. Click <strong>Parse reviews</strong> to see the results, remove any you don't want, then click <strong>Add all to list</strong>.</p>
+
+    <div class="tip-box">
+      <strong>💡 Bulk paste works best when</strong>
+      Reviews are separated by blank lines, or pasted directly from the CSV file (one row per line). You can also mix and match — import a CSV file first, then add extra ones manually.
+    </div>
+  </div>
+
+  <!-- 4 -->
+  <div class="section" id="managing-reviews">
+    <div class="section-num">04</div>
+    <h2>Managing the review list</h2>
+    <p>Once reviews are in the queue they appear in the <strong>Reviews</strong> panel on the left. The badge shows the total count.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">→</div>
+        <div class="step-body">
+          <strong>Select a review for the preview</strong>
+          <p>Click the review text to select it. It highlights in green and appears in the preview on the right.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">→</div>
+        <div class="step-body">
+          <strong>Edit the reviewer name</strong>
+          <p>Click directly on the name (shown in grey next to the stars) and type to change it. The preview updates instantly.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">→</div>
+        <div class="step-body">
+          <strong>Edit or shorten the review text</strong>
+          <p>Click the <kbd>✎</kbd> pencil icon to expand a full text editor. Type to shorten or reword the review — the preview updates as you type. Click <kbd>✎</kbd> again to close it.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">→</div>
+        <div class="step-body">
+          <strong>Delete a review</strong>
+          <p>Click the <kbd>×</kbd> button on the right of any review to remove it from the list permanently.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="warn-box">
+      <strong>⚠ Keep review text concise</strong>
+      Long reviews wrap across many lines and can dominate the image. Aim for 100–180 characters — one or two punchy sentences work best on a Reel frame.
+    </div>
+  </div>
+
+  <!-- 5 -->
+  <div class="section" id="photos">
+    <div class="section-num">05</div>
+    <h2>Adding your photos</h2>
+    <p>Click the upload area in the <strong>Photos</strong> panel and select your Land Rover images. You can select multiple files at once — they all appear as thumbnails below the upload zone.</p>
+    <p>Click any thumbnail to switch to that photo in the preview. To remove a photo, hover over its thumbnail and click the red <kbd>×</kbd> that appears in the corner.</p>
+
+    <div class="tip-box">
+      <strong>💡 Best photos for Reels</strong>
+      Landscape-orientation photos with sky, open terrain, or dramatic scenery work best — there's more space around the subject for the text overlay to sit clearly. The app fills the full 9:16 frame by cropping to fit.
+    </div>
+  </div>
+
+  <!-- 6 -->
+  <div class="section" id="styling">
+    <div class="section-num">06</div>
+    <h2>Styling your Reel</h2>
+    <p>The <strong>Style</strong> panel on the right gives you control over how the text overlay looks.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">→</div>
+        <div class="step-body">
+          <strong>Quote position — Bottom / Centre / Top</strong>
+          <p>Controls where on the image the review block sits. Bottom is the Instagram-standard position; centre works well for symmetrical shots.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">→</div>
+        <div class="step-body">
+          <strong>Text nudge ↕</strong>
+          <p>Fine-tunes the vertical position of the text block. Drag right to move it down, left to move it up — useful when the main position (bottom/centre/top) puts the text over an important part of your photo.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">→</div>
+        <div class="step-body">
+          <strong>Overlay darkness</strong>
+          <p>Controls how dark the semi-transparent gradient behind the text is. Increase it if your text is hard to read against a bright background.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">→</div>
+        <div class="step-body">
+          <strong>Text size</strong>
+          <p>Sets the size of the review quote text. Shorter reviews can afford a larger size; longer reviews may need to be smaller to fit.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">→</div>
+        <div class="step-body">
+          <strong>Website text size</strong>
+          <p>Controls the size of the <em>scotlandoverland.com</em> URL shown at the bottom of the text block, independently of the review text size.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">→</div>
+        <div class="step-body">
+          <strong>Overlay colour</strong>
+          <p>Choose between <em>Dark/black</em>, <em>Forest green</em>, or <em>Slate grey</em> for the gradient behind the text. Forest green ties nicely to the Scotland Overland brand.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">→</div>
+        <div class="step-body">
+          <strong>Show branding</strong>
+          <p>Toggles the "SCOTLAND OVERLAND" and website URL at the bottom of the text block. Leave this on for branded content.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7 -->
+  <div class="section" id="positioning">
+    <div class="section-num">07</div>
+    <h2>Positioning the image</h2>
+    <p>Below the preview is an <strong>Image position &amp; zoom</strong> section that lets you frame your shot exactly as you want it.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">→</div>
+        <div class="step-body">
+          <strong>Drag to pan</strong>
+          <p>Click and drag directly on the preview to move the photo around within the frame. The text overlay stays fixed; only the photo moves.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">→</div>
+        <div class="step-body">
+          <strong>Arrow buttons</strong>
+          <p>The ↑ ↓ ← → buttons nudge the photo in precise steps — useful for small adjustments.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">→</div>
+        <div class="step-body">
+          <strong>Zoom slider</strong>
+          <p>Drag right to zoom into the photo. Zooming in gives you more room to pan and lets you crop out unwanted edges.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">→</div>
+        <div class="step-body">
+          <strong>Scroll wheel</strong>
+          <p>Hovering over the preview and scrolling also zooms in and out.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">→</div>
+        <div class="step-body">
+          <strong>Reset button</strong>
+          <p>Click <strong>Reset</strong> to return the photo to its default centred position and zoom level.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8 -->
+  <div class="section" id="saving">
+    <div class="section-num">08</div>
+    <h2>Generating and saving your Reel</h2>
+    <p>When you're happy with the preview, click the green <strong>Generate save image</strong> button. The finished Reel appears below the button at full resolution.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Right-click the generated image</strong>
+          <p>A context menu appears with save options.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Click "Save image as…"</strong>
+          <p>Choose where to save it on your computer. The file is a full-quality 1080 × 1920px PNG.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Alternatively, drag it to your desktop</strong>
+          <p>Click and hold the image, then drag it straight to your desktop or a folder — it saves as a PNG file instantly.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="warn-box">
+      <strong>⚠ If "Save image as…" doesn't appear</strong>
+      Some browsers show "Copy image" instead. This copies the full-resolution image to your clipboard and you can paste it directly into Instagram, WhatsApp, or your photos app. Alternatively try a different browser — Chrome and Firefox both reliably show "Save image as…".
+    </div>
+
+    <div class="tip-box">
+      <strong>💡 Uploading to Instagram</strong>
+      In the Instagram app, tap the + button, select the saved PNG from your camera roll or downloads, choose <strong>Reel</strong> as the format, and post as a static image Reel or add music and transitions in the editor.
+    </div>
+  </div>
+
+  <!-- 9 -->
+  <div class="section" id="workflow">
+    <div class="section-num">09</div>
+    <h2>Recommended workflow</h2>
+    <p>Here's the most efficient way to produce a batch of Reels in one sitting:</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Run the scraper extension and download your CSV</strong>
+          <p>Do this once and keep the CSV file saved. You can reload it any time to refresh your review pool.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Import the CSV and tidy up your reviews</strong>
+          <p>Remove any non-English reviews or very short entries. Use the ✎ editor to shorten long reviews down to a punchy 1–2 sentences.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Upload a batch of your best photos</strong>
+          <p>Aim for variety — wide landscape shots, vehicle detail shots, camping scenes. More photos gives you more combinations to work with.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <strong>Set your style once and keep it consistent</strong>
+          <p>Choose your overlay colour, darkness, and text size, then leave them the same for all your Reels so your feed looks cohesive.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <strong>Work through photo + review combinations</strong>
+          <p>Select a review, switch to a photo, pan/zoom to frame it, generate and save. Repeat for each combination.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10 -->
+  <div class="section" id="tips">
+    <div class="section-num">10</div>
+    <h2>Tips for great Reels</h2>
+
+    <div class="tip-box">
+      <strong>📏 Keep review text short</strong>
+      100–180 characters is the sweet spot. One memorable sentence performs better on a Reel than a full paragraph. Use the ✎ editor to trim longer reviews down to their best line.
+    </div>
+    <div class="tip-box">
+      <strong>🌅 Match the mood of the photo to the review</strong>
+      A dramatic Highland landscape pairs well with an adventure-focused quote. A cosy campsite photo pairs well with a comfort-focused quote. Think about what the image conveys before you pick the review.
+    </div>
+    <div class="tip-box">
+      <strong>🎨 Use Forest green overlay for branded content</strong>
+      The dark green overlay ties the Reel to your Scotland Overland brand colours and feels more distinctive than a plain black overlay.
+    </div>
+    <div class="tip-box">
+      <strong>📸 Portrait photos work best</strong>
+      The Reel frame is 9:16 (taller than wide). Portrait-orientation or square photos fill the frame naturally. Landscape photos work too — zoom in slightly and pan to the most interesting area.
+    </div>
+    <div class="tip-box">
+      <strong>🔄 Refresh your reviews regularly</strong>
+      Every few months, re-run the scraper extension to pick up new Google reviews and import a fresh CSV. New reviews from recent customers are the most compelling social proof.
+    </div>
+    <div class="tip-box">
+      <strong>🗂 Save your Reels in a dedicated folder</strong>
+      Keep a folder called "Reels ready to post" so you always have a queue ready to go and never need to scramble for content.
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <strong>Scotland Overland Reel Maker</strong> · User Guide<br/>
+  <span style="margin-top:6px;display:block">scotlandoverland.com</span>
+</footer>
+
+</body>
+</html>
