@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Reel Maker — Setup</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.4.0/dist/tabler-icons.min.css"/>
+<style>
+:root{
+  --brand-primary:#1c2b22;
+  --brand-accent:#4a7c59;
+  --brand-light:#d4e8d0;
+  --brand-text-on-primary:#d4e8d0;
+  --color-bg:#f5f5f5;
+  --color-bg2:#ffffff;
+  --color-text:#1a1a1a;
+  --color-text2:#666666;
+  --color-border:#e0e0e0;
+  --color-border2:#c8c8c8;
+  --radius-md:8px;
+  --radius-lg:12px;
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --color-bg:#1a1a1a;--color-bg2:#242424;--color-text:#f0f0f0;
+    --color-text2:#999;--color-border:#333;--color-border2:#3a3a3a;
+  }
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--color-bg);color:var(--color-text);min-height:100vh}
+
+/* ── SETUP OVERLAY ─────────────────────────────────────── */
+#setup{
+  position:fixed;inset:0;z-index:1000;
+  background:rgba(0,0,0,.55);backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;padding:16px;
+}
+.setup-card{
+  background:var(--color-bg2);border-radius:16px;
+  width:100%;max-width:500px;
+  box-shadow:0 24px 60px rgba(0,0,0,.25);
+  overflow:hidden;
+}
+.setup-header{
+  padding:24px 28px 20px;
+  border-bottom:1px solid var(--color-border);
+}
+.setup-header h2{font-size:20px;font-weight:700;color:var(--color-text);margin-bottom:4px}
+.setup-header p{font-size:13px;color:var(--color-text2);line-height:1.5}
+.setup-body{padding:22px 28px;display:flex;flex-direction:column;gap:14px}
+.setup-footer{padding:16px 28px;background:var(--color-bg);border-top:1px solid var(--color-border)}
+.field label{font-size:12px;font-weight:500;color:var(--color-text2);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
+.field input[type=text],.field input[type=url]{
+  width:100%;border:1px solid var(--color-border2);border-radius:var(--radius-md);
+  padding:9px 12px;font-size:14px;font-family:var(--font);
+  color:var(--color-text);background:var(--color-bg);
+}
+.field input:focus{outline:none;border-color:var(--brand-accent)}
+.color-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.color-field label{font-size:12px;font-weight:500;color:var(--color-text2);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
+.color-field-inner{display:flex;align-items:center;gap:8px}
+.color-field input[type=color]{
+  width:40px;height:36px;border:1px solid var(--color-border2);border-radius:6px;
+  padding:2px;cursor:pointer;background:var(--color-bg);
+}
+.color-field input[type=text]{
+  flex:1;border:1px solid var(--color-border2);border-radius:var(--radius-md);
+  padding:8px 10px;font-size:13px;font-family:monospace;
+  color:var(--color-text);background:var(--color-bg);
+}
+.color-field input[type=text]:focus{outline:none;border-color:var(--brand-accent)}
+.setup-preview{
+  display:flex;align-items:center;gap:10px;padding:12px 14px;
+  border-radius:var(--radius-md);border:1px solid var(--color-border);
+  background:var(--color-bg);
+}
+.setup-preview-logo{
+  font-size:15px;font-weight:700;letter-spacing:.04em;
+  padding:6px 14px;border-radius:6px;
+}
+.setup-preview p{font-size:12px;color:var(--color-text2)}
+.btn-launch{
+  width:100%;padding:13px;border-radius:var(--radius-md);
+  font-size:15px;font-weight:600;cursor:pointer;border:none;
+  background:var(--brand-primary);color:var(--brand-text-on-primary);
+  transition:opacity .15s;
+}
+.btn-launch:hover{opacity:.88}
+.preset-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.preset{
+  font-size:11px;padding:4px 10px;border-radius:999px;cursor:pointer;
+  border:1px solid var(--color-border2);background:var(--color-bg);
+  color:var(--color-text2);transition:background .12s;
+}
+.preset:hover{background:var(--color-border);color:var(--color-text)}
+
+/* ── MAIN APP ──────────────────────────────────────────── */
+#app{display:none;padding:14px}
+.header{
+  display:flex;align-items:center;gap:14px;margin-bottom:18px;padding:13px 18px;
+  background:var(--color-bg2);border-radius:var(--radius-lg);
+  border:0.5px solid var(--color-border);justify-content:space-between;
+}
+.header-logo{font-size:19px;font-weight:700;letter-spacing:.04em}
+.header-sub{font-size:12px;color:var(--color-text2)}
+.header-actions{display:flex;align-items:center;gap:8px}
+.header-btn{
+  display:inline-flex;align-items:center;gap:5px;padding:7px 13px;
+  border-radius:var(--radius-md);font-size:12px;font-weight:500;
+  cursor:pointer;border:0.5px solid var(--color-border2);
+  background:var(--color-bg2);color:var(--color-text2);text-decoration:none;
+  transition:background .12s;white-space:nowrap;
+}
+.header-btn:hover{background:var(--color-bg)}
+.header-btn.primary{color:var(--brand-text-on-primary);border-color:transparent}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:680px){.grid{grid-template-columns:1fr}}
+.panel{background:var(--color-bg2);border:0.5px solid var(--color-border);border-radius:var(--radius-lg);padding:1.2rem}
+.ptitle{font-size:11px;font-weight:600;color:var(--color-text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.ptitle i{font-size:14px}
+textarea,input[type=text]{
+  width:100%;border:0.5px solid var(--color-border2);border-radius:var(--radius-md);
+  padding:7px 10px;font-size:13px;font-family:var(--font);
+  color:var(--color-text);background:var(--color-bg);
+}
+textarea:focus,input[type=text]:focus{outline:none}
+textarea{resize:vertical}
+label{font-size:12px;color:var(--color-text2);display:block;margin:8px 0 3px}
+.btn{
+  display:inline-flex;align-items:center;gap:6px;padding:7px 12px;
+  border-radius:var(--radius-md);font-size:13px;font-weight:500;cursor:pointer;
+  border:0.5px solid var(--color-border2);background:var(--color-bg2);
+  color:var(--color-text);width:100%;justify-content:center;margin-top:7px;
+  transition:opacity .12s;
+}
+.btn:hover{opacity:.8}
+.btn-primary{color:var(--brand-text-on-primary);border:none}
+.btn-secondary{background:var(--color-bg);color:var(--color-text2)}
+.btn-ghost{background:transparent;color:var(--color-text2);font-size:12px;padding:5px 10px;margin-top:0;width:auto;border-color:var(--color-border2)}
+.rlist{display:flex;flex-direction:column;gap:4px;max-height:240px;overflow-y:auto;margin-top:6px}
+.ritem{border:0.5px solid var(--color-border);border-radius:var(--radius-md);padding:7px 10px;font-size:12px;line-height:1.4;color:var(--color-text);display:flex;flex-direction:column;gap:4px}
+.ritem.sel{background:#f8f8f8}
+.rmeta{display:flex;align-items:center;gap:5px}
+.sg{color:#f4a400;font-size:11px}
+.rname-input{border:none;background:transparent;font-size:11px;color:var(--color-text2);font-family:var(--font);padding:0;flex:1;min-width:0;border-bottom:1px dashed var(--color-border2)}
+.rname-input:focus{outline:none}
+.del-btn{flex-shrink:0;background:none;border:none;cursor:pointer;color:var(--color-text2);font-size:15px;padding:0 2px;line-height:1;border-radius:3px;opacity:.4}
+.del-btn:hover{color:#c0392b;opacity:1;background:#fff0f0}
+.rtext{font-size:12px;cursor:pointer;color:var(--color-text)}
+.upzone{border:1.5px dashed var(--color-border2);border-radius:var(--radius-md);padding:14px;text-align:center;cursor:pointer}
+.upzone:hover{border-color:var(--brand-accent)}
+.upzone i{font-size:22px;color:var(--color-text2)}
+.upzone p{font-size:12px;color:var(--color-text2);margin-top:4px}
+.csv-upzone{border:1.5px dashed var(--color-border2);border-radius:var(--radius-md);padding:14px;text-align:center;cursor:pointer;background:var(--color-bg)}
+.csv-upzone:hover{border-color:var(--brand-accent)}
+.csv-upzone i{font-size:22px;color:var(--color-text2)}
+.csv-upzone p{font-size:12px;color:var(--color-text2);margin-top:4px}
+.thumbs{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.thumb-wrap{position:relative;width:54px;height:54px;flex-shrink:0}
+.thumb{width:54px;height:54px;object-fit:cover;border-radius:6px;cursor:pointer;border:2.5px solid transparent;display:block}
+.thumb-del{position:absolute;top:-5px;right:-5px;width:17px;height:17px;border-radius:50%;background:#c0392b;color:#fff;border:none;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s;font-weight:700}
+.thumb-wrap:hover .thumb-del{opacity:1}
+.prevwrap{position:relative;width:100%;aspect-ratio:9/16;max-height:440px;border-radius:var(--radius-md);overflow:hidden;background:#111;display:flex;align-items:center;justify-content:center;cursor:grab;user-select:none}
+.prevwrap:active{cursor:grabbing}
+.prevwrap canvas{width:100%;height:100%;object-fit:contain;display:block;pointer-events:none}
+.drag-hint{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.6);color:#fff;font-size:11px;padding:4px 12px;border-radius:999px;pointer-events:none;white-space:nowrap;opacity:1;transition:opacity .5s}
+.drag-hint.hidden{opacity:0}
+.srow{display:flex;gap:5px;margin-top:6px}
+.sbtn{flex:1;padding:5px 0;border-radius:var(--radius-md);font-size:12px;border:0.5px solid var(--color-border2);cursor:pointer;background:var(--color-bg);color:var(--color-text);text-align:center}
+.sep{height:0.5px;background:var(--color-border);margin:10px 0}
+select{width:100%;border:0.5px solid var(--color-border2);border-radius:var(--radius-md);padding:6px 10px;font-size:13px;font-family:var(--font);color:var(--color-text);background:var(--color-bg)}
+.badge{display:inline-block;font-size:11px;padding:2px 7px;border-radius:999px;font-weight:500}
+.ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#888;pointer-events:none}
+.ph i{font-size:32px}.ph p{font-size:12px}
+.save-box{display:none;margin-top:10px;border:0.5px solid var(--color-border);border-radius:var(--radius-lg);overflow:hidden}
+.save-box img{width:100%;display:block}
+.save-label{font-size:12px;padding:8px 14px;text-align:center;line-height:1.7}
+.save-label strong{display:block}
+#statusMsg{font-size:12px;color:var(--color-text2);margin-top:5px;text-align:center;min-height:14px}
+.tip{font-size:11px;color:var(--color-text2);line-height:1.6;padding:7px 10px;background:var(--color-bg);border-radius:var(--radius-md);border:0.5px solid var(--color-border)}
+.parsed-chunk{border:0.5px solid var(--color-border2);border-radius:var(--radius-md);padding:8px 10px;margin-top:5px;font-size:12px;line-height:1.5;background:var(--color-bg);position:relative}
+.tabs{display:flex;margin-bottom:12px;border:0.5px solid var(--color-border2);border-radius:var(--radius-md);overflow:hidden}
+.tab{flex:1;padding:7px 0;font-size:11px;font-weight:500;cursor:pointer;text-align:center;background:var(--color-bg);color:var(--color-text2);border:none;transition:background .12s}
+.tabpanel{display:none}.tabpanel.act{display:block}
+.csv-preview{display:flex;flex-direction:column;gap:4px;margin-top:8px;max-height:150px;overflow-y:auto}
+.csv-row{display:grid;grid-template-columns:1fr 44px 100px 20px;gap:6px;align-items:center;padding:5px 8px;border:0.5px solid var(--color-border);border-radius:var(--radius-md);font-size:11px;background:var(--color-bg)}
+.csv-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.csv-stars{color:#f4a400;text-align:center}
+.csv-name{color:var(--color-text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dl-template{font-size:11px;text-decoration:underline;cursor:pointer;margin-top:6px;display:inline-block}
+.pos-controls{display:grid;grid-template-columns:1fr auto 1fr;grid-template-rows:auto auto auto;gap:4px;align-items:center;justify-items:center;margin-top:6px}
+.pos-btn{background:var(--color-bg);border:0.5px solid var(--color-border2);border-radius:var(--radius-md);width:36px;height:36px;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--color-text)}
+.slider-row{display:flex;align-items:center;gap:8px;margin-top:7px}
+.slider-row label{margin:0;white-space:nowrap;min-width:100px;font-size:12px;color:var(--color-text2)}
+.slider-row input[type=range]{flex:1}
+.slider-row span{font-size:11px;color:var(--color-text2);min-width:32px;text-align:right}
+.zoom-row{display:flex;align-items:center;gap:8px;margin-top:8px}
+.zoom-row label{margin:0;white-space:nowrap;font-size:12px;color:var(--color-text2)}
+.zoom-row input{flex:1}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     SETUP SCREEN
+═══════════════════════════════════════════════ -->
+<div id="setup">
+  <div class="setup-card">
+    <div class="setup-header">
+      <h2>⚙️ Set up your Reel Maker</h2>
+      <p>Enter your company details once. These appear on every Reel you generate and can be changed any time via the Settings button in the app.</p>
+    </div>
+    <div class="setup-body">
+
+      <div class="field">
+        <label>Company name</label>
+        <input type="text" id="s-companyName" placeholder="e.g. Scotland Overland" maxlength="60"/>
+      </div>
+
+      <div class="field">
+        <label>Website URL <span style="font-weight:400;text-transform:none">(shown on Reel)</span></label>
+        <input type="text" id="s-companyUrl" placeholder="e.g. scotlandoverland.com" maxlength="80"/>
+      </div>
+
+      <div class="color-row">
+        <div class="color-field">
+          <label>Primary colour</label>
+          <div class="color-field-inner">
+            <input type="color" id="s-colorPicker1" value="#1c2b22" oninput="syncColor(1)"/>
+            <input type="text" id="s-colorHex1" value="#1c2b22" maxlength="7" oninput="syncHex(1)" placeholder="#1c2b22"/>
+          </div>
+          <div style="font-size:11px;color:var(--color-text2);margin-top:4px">Header &amp; buttons</div>
+        </div>
+        <div class="color-field">
+          <label>Accent colour</label>
+          <div class="color-field-inner">
+            <input type="color" id="s-colorPicker2" value="#4a7c59" oninput="syncColor(2)"/>
+            <input type="text" id="s-colorHex2" value="#4a7c59" maxlength="7" oninput="syncHex(2)" placeholder="#4a7c59"/>
+          </div>
+          <div style="font-size:11px;color:var(--color-text2);margin-top:4px">Highlights &amp; active states</div>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:12px;color:var(--color-text2);margin-bottom:6px;font-weight:500;text-transform:uppercase;letter-spacing:.05em">Quick presets</div>
+        <div class="preset-row">
+          <div class="preset" onclick="applyPreset('#1c2b22','#4a7c59')">🌿 Forest</div>
+          <div class="preset" onclick="applyPreset('#1a1a2e','#e94560')">🌆 Dark city</div>
+          <div class="preset" onclick="applyPreset('#2c3e50','#3498db')">🌊 Ocean</div>
+          <div class="preset" onclick="applyPreset('#4a1942','#c0392b')">🍷 Burgundy</div>
+          <div class="preset" onclick="applyPreset('#1a1a1a','#f39c12')">⭐ Midnight gold</div>
+          <div class="preset" onclick="applyPreset('#2d4a22','#8bc34a')">🌱 Lime</div>
+          <div class="preset" onclick="applyPreset('#0d1b2a','#00b4d8')">🧊 Ice blue</div>
+          <div class="preset" onclick="applyPreset('#3d2b1f','#d4a574')">🪵 Rustic</div>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:12px;color:var(--color-text2);margin-bottom:6px;font-weight:500;text-transform:uppercase;letter-spacing:.05em">Preview</div>
+        <div class="setup-preview">
+          <div class="setup-preview-logo" id="s-previewLogo" style="background:#1c2b22;color:#d4e8d0">Company</div>
+          <p id="s-previewUrl" style="font-size:11px">your-website.com</p>
+        </div>
+      </div>
+
+    </div>
+    <div class="setup-footer">
+      <button class="btn-launch" id="launchBtn" onclick="launchApp()">Launch Reel Maker →</button>
+      <p style="font-size:11px;color:var(--color-text2);margin-top:10px;text-align:center">All settings can be changed later via the ⚙️ Settings button</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MAIN APP
+═══════════════════════════════════════════════ -->
+<div id="app">
+
+  <div class="header">
+    <div style="flex:1">
+      <div class="header-logo" id="appLogo">Reel Maker</div>
+      <div class="header-sub">Instagram Reel Maker — overlay reviews on your photos</div>
+    </div>
+    <div class="header-actions">
+      <button class="header-btn" onclick="openSettings()"><i class="ti ti-settings" style="font-size:14px"></i> Settings</button>
+      <a href="https://nickscott49.github.io/ReelMaker/guide.html" target="_blank" rel="noopener" class="header-btn primary" id="guideLink" style="display:none">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        Guide
+      </a>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div style="display:flex;flex-direction:column;gap:14px">
+
+      <!-- REVIEWS PANEL -->
+      <div class="panel">
+        <div class="ptitle"><i class="ti ti-list"></i> Reviews <span class="badge" id="countBadge" style="background:var(--color-bg);border:0.5px solid var(--color-border)">0</span></div>
+        <div class="tip">Click review text to select it. Edit the name inline. Hit <strong style="color:#c0392b">×</strong> to delete. Click <strong>✎</strong> to edit text.</div>
+        <div class="rlist" id="rlist"></div>
+
+        <div class="sep"></div>
+        <div class="ptitle" style="margin-bottom:8px"><i class="ti ti-clipboard-text"></i> Add reviews</div>
+
+        <div class="tabs">
+          <div class="tab act" onclick="switchTab('single')" data-tab="single">Single</div>
+          <div class="tab" onclick="switchTab('bulk')" data-tab="bulk">Bulk paste</div>
+          <div class="tab" onclick="switchTab('csv')" data-tab="csv">CSV file</div>
+        </div>
+
+        <div class="tabpanel act" id="tab-single">
+          <textarea id="pasteBox" placeholder="Paste a review here — name and stars are auto-detected..." oninput="smartParse()" style="min-height:70px"></textarea>
+          <div id="parsedPreview" style="font-size:12px;padding:6px 10px;border-radius:var(--radius-md);margin-top:6px;display:none;border:0.5px solid var(--brand-accent);background:var(--color-bg)"></div>
+          <label>Reviewer name</label>
+          <input type="text" id="reviewerName" placeholder="Auto-detected or type manually"/>
+          <label>Star rating</label>
+          <div style="display:flex;gap:2px;margin-top:3px" id="singleStars">
+            <button class="sstar" data-v="1" onclick="setStar(1)" style="font-size:22px;cursor:pointer;color:#f4a400;background:none;border:none;padding:2px">★</button>
+            <button class="sstar" data-v="2" onclick="setStar(2)" style="font-size:22px;cursor:pointer;color:#f4a400;background:none;border:none;padding:2px">★</button>
+            <button class="sstar" data-v="3" onclick="setStar(3)" style="font-size:22px;cursor:pointer;color:#f4a400;background:none;border:none;padding:2px">★</button>
+            <button class="sstar" data-v="4" onclick="setStar(4)" style="font-size:22px;cursor:pointer;color:#f4a400;background:none;border:none;padding:2px">★</button>
+            <button class="sstar" data-v="5" onclick="setStar(5)" style="font-size:22px;cursor:pointer;color:#f4a400;background:none;border:none;padding:2px">★</button>
+          </div>
+          <div style="display:flex;gap:6px;margin-top:10px">
+            <button class="btn btn-primary" onclick="addSingle()" style="margin-top:0;flex:1"><i class="ti ti-plus"></i> Add to list</button>
+            <button class="btn btn-secondary" onclick="clearSingle()" style="margin-top:0;width:auto;padding:7px 12px"><i class="ti ti-x"></i> Clear</button>
+          </div>
+        </div>
+
+        <div class="tabpanel" id="tab-bulk">
+          <div class="tip" style="margin-bottom:8px">Select all reviews on Facebook or Google, copy and paste the whole lot here. The parser will split them automatically.</div>
+          <textarea id="bulkPasteBox" placeholder="Paste multiple reviews here at once..." style="min-height:110px"></textarea>
+          <div id="bulkParsedList" style="margin-top:8px;display:flex;flex-direction:column;gap:5px;max-height:160px;overflow-y:auto"></div>
+          <div style="display:flex;gap:6px;margin-top:7px">
+            <button class="btn btn-secondary" onclick="parseBulkPaste()" style="margin-top:0;flex:1"><i class="ti ti-wand"></i> Parse reviews</button>
+            <button class="btn btn-secondary" onclick="clearBulk()" style="margin-top:0;width:auto;padding:7px 12px"><i class="ti ti-x"></i> Clear</button>
+          </div>
+          <button class="btn btn-primary" onclick="addAllParsed()" id="addAllBtn" style="display:none;margin-top:5px"></button>
+        </div>
+
+        <div class="tabpanel" id="tab-csv">
+          <div class="tip" style="margin-bottom:6px">
+            Upload a <strong style="color:var(--color-text)">.csv</strong> file. Supports the Google review scraper extension format, or your own file with columns: <code style="font-size:11px;background:var(--color-bg);padding:1px 5px;border-radius:3px">review text, stars, reviewer name</code>
+          </div>
+          <span class="dl-template" onclick="downloadTemplate()" style="color:var(--brand-accent)"><i class="ti ti-download" style="font-size:12px;vertical-align:-1px"></i> Download CSV template</span>
+          <div class="csv-upzone" onclick="document.getElementById('csvInput').click()" style="margin-top:8px">
+            <i class="ti ti-file-spreadsheet"></i>
+            <p>Click to upload your CSV file</p>
+            <p style="font-size:11px;margin-top:3px">.csv files only</p>
+          </div>
+          <input type="file" id="csvInput" accept=".csv,text/csv" style="display:none" onchange="handleCSV(event)"/>
+          <div class="csv-preview" id="csvPreview"></div>
+          <div style="display:flex;gap:6px;margin-top:6px">
+            <button class="btn btn-primary" onclick="addAllCSV()" id="addCSVBtn" style="display:none;margin-top:0;flex:1"></button>
+            <button class="btn btn-secondary" onclick="clearCSV()" id="clearCSVBtn" style="display:none;margin-top:0;width:auto;padding:7px 12px"><i class="ti ti-x"></i> Clear</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PHOTOS PANEL -->
+      <div class="panel">
+        <div class="ptitle"><i class="ti ti-photo"></i> Photos <span class="badge" id="photoBadge" style="background:var(--color-bg);border:0.5px solid var(--color-border)">0</span></div>
+        <div class="upzone" onclick="document.getElementById('imgInput').click()">
+          <i class="ti ti-upload"></i>
+          <p>Click to upload your photos</p>
+          <p style="font-size:11px;margin-top:3px">JPG or PNG · upload multiple at once</p>
+        </div>
+        <input type="file" id="imgInput" accept="image/*" multiple style="display:none" onchange="handleImages(event)"/>
+        <div class="tip" style="margin-top:8px">Hover a thumbnail and click <strong style="color:#c0392b">×</strong> to remove it.</div>
+        <div class="thumbs" id="thumbs"></div>
+      </div>
+
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:14px">
+
+      <!-- STYLE PANEL -->
+      <div class="panel">
+        <div class="ptitle"><i class="ti ti-adjustments"></i> Style</div>
+        <label>Quote position</label>
+        <div class="srow">
+          <div class="sbtn act" onclick="setLayout('bottom')" id="s-bottom">Bottom</div>
+          <div class="sbtn" onclick="setLayout('center')" id="s-center">Centre</div>
+          <div class="sbtn" onclick="setLayout('top')" id="s-top">Top</div>
+        </div>
+        <div class="slider-row" style="margin-top:10px">
+          <label>Text nudge ↕</label>
+          <input type="range" min="-400" max="400" value="0" step="10" id="textNudge" oninput="onTextNudge()"/>
+          <span id="textNudgeVal">0</span>
+        </div>
+        <div class="slider-row">
+          <label>Overlay darkness</label>
+          <input type="range" min="25" max="88" value="58" step="1" id="opacity" oninput="renderPreview()"/>
+          <span></span>
+        </div>
+        <div class="slider-row">
+          <label>Text size</label>
+          <input type="range" min="16" max="36" value="24" step="1" id="fsize" oninput="renderPreview()"/>
+          <span></span>
+        </div>
+        <div class="slider-row">
+          <label>Website text size</label>
+          <input type="range" min="50" max="130" value="80" step="1" id="urlSize" oninput="renderPreview()"/>
+          <span></span>
+        </div>
+        <label>Overlay colour</label>
+        <select id="overlayColor" onchange="renderPreview()">
+          <option value="brand">Brand colour</option>
+          <option value="black">Dark / black</option>
+          <option value="slate">Slate grey</option>
+          <option value="custom">Custom…</option>
+        </select>
+        <div id="customColorRow" style="display:none;margin-top:8px">
+          <label>Custom overlay colour</label>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input type="color" id="customOverlayColor" value="#000000" oninput="renderPreview()" style="width:40px;height:32px;border:1px solid var(--color-border2);border-radius:6px;padding:2px;cursor:pointer;background:var(--color-bg)"/>
+            <input type="text" id="customOverlayHex" value="#000000" maxlength="7" oninput="syncCustomOverlayHex()" style="flex:1;font-family:monospace;font-size:13px"/>
+          </div>
+        </div>
+        <label>Show branding</label>
+        <select id="showBrand" onchange="renderPreview()">
+          <option value="1">Yes — show company name &amp; URL</option>
+          <option value="0">No</option>
+        </select>
+        <label>Text colour on overlay</label>
+        <select id="textColorScheme" onchange="renderPreview()">
+          <option value="light">Light (white/cream)</option>
+          <option value="dark">Dark (black/charcoal)</option>
+        </select>
+      </div>
+
+      <!-- PREVIEW PANEL -->
+      <div class="panel" style="flex:1">
+        <div class="ptitle"><i class="ti ti-device-mobile"></i> Preview <span class="badge" style="background:var(--color-bg);border:0.5px solid var(--color-border)">9:16 Instagram Reel</span></div>
+        <div class="prevwrap" id="prevwrap">
+          <canvas id="rc" style="width:100%;height:100%;object-fit:contain;display:block"></canvas>
+          <div class="ph" id="ph">
+            <i class="ti ti-photo"></i>
+            <p>Upload a photo &amp; select a review to preview</p>
+          </div>
+          <div class="drag-hint" id="dragHint">⟳ Drag to reposition · scroll to zoom</div>
+        </div>
+
+        <div style="margin-top:10px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+            <span style="font-size:11px;color:var(--color-text2)">Image position &amp; zoom</span>
+            <button class="btn btn-ghost" onclick="resetPosition()">Reset</button>
+          </div>
+          <div class="pos-controls">
+            <div></div>
+            <button class="pos-btn" onclick="nudge(0,-20)" aria-label="Move up">↑</button>
+            <div></div>
+            <button class="pos-btn" onclick="nudge(-20,0)" aria-label="Move left">←</button>
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--color-bg);border:0.5px solid var(--color-border);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--color-text2)">pan</div>
+            <button class="pos-btn" onclick="nudge(20,0)" aria-label="Move right">→</button>
+            <div></div>
+            <button class="pos-btn" onclick="nudge(0,20)" aria-label="Move down">↓</button>
+            <div></div>
+          </div>
+          <div class="zoom-row">
+            <label>Zoom</label>
+            <input type="range" min="100" max="250" value="100" step="1" id="zoomSlider" oninput="onZoomSlider()"/>
+            <span id="zoomVal" style="font-size:11px;color:var(--color-text2);min-width:36px;text-align:right">100%</span>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="exportReel()" style="margin-top:12px;font-size:14px;padding:11px 14px">
+          <i class="ti ti-photo-down"></i> Generate save image
+        </button>
+        <div id="statusMsg"></div>
+        <div class="save-box" id="saveBox">
+          <img id="saveImg" src="" alt="Right-click the image to save it"/>
+          <div class="save-label" id="saveLabel">
+            <strong>Right-click the image → "Save image as…"</strong>
+            Or drag it to your desktop. Full 1080×1920px quality.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Brand config ───────────────────────────────────────────
+let brand={
+  name:'',
+  url:'',
+  primary:'#1c2b22',
+  accent:'#4a7c59',
+};
+
+// ── Setup screen ───────────────────────────────────────────
+function syncColor(n){
+  const hex=document.getElementById('s-colorPicker'+n).value;
+  document.getElementById('s-colorHex'+n).value=hex;
+  updateSetupPreview();
+}
+function syncHex(n){
+  let hex=document.getElementById('s-colorHex'+n).value.trim();
+  if(!hex.startsWith('#'))hex='#'+hex;
+  if(/^#[0-9a-fA-F]{6}$/.test(hex)){
+    document.getElementById('s-colorPicker'+n).value=hex;
+    updateSetupPreview();
+  }
+}
+function applyPreset(p,a){
+  document.getElementById('s-colorPicker1').value=p;
+  document.getElementById('s-colorHex1').value=p;
+  document.getElementById('s-colorPicker2').value=a;
+  document.getElementById('s-colorHex2').value=a;
+  updateSetupPreview();
+}
+function updateSetupPreview(){
+  const name=document.getElementById('s-companyName').value||'Company';
+  const url=document.getElementById('s-companyUrl').value||'your-website.com';
+  const p=document.getElementById('s-colorHex1').value;
+  const a=document.getElementById('s-colorHex2').value;
+  const logo=document.getElementById('s-previewLogo');
+  logo.textContent=name;
+  logo.style.background=p;
+  logo.style.color=lightenOrDarken(p);
+  document.getElementById('s-previewUrl').textContent=url;
+}
+function lightenOrDarken(hex){
+  // Return white or dark text depending on bg luminance
+  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  const lum=(0.299*r+0.587*g+0.114*b)/255;
+  return lum>0.5?'#1a1a1a':'#f5f5f5';
+}
+function hexToRgb(hex){
+  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return`${r},${g},${b}`;
+}
+
+document.getElementById('s-companyName').addEventListener('input',updateSetupPreview);
+document.getElementById('s-companyUrl').addEventListener('input',updateSetupPreview);
+
+function launchApp(){
+  const name=document.getElementById('s-companyName').value.trim();
+  const url=document.getElementById('s-companyUrl').value.trim();
+  if(!name){document.getElementById('s-companyName').focus();return;}
+  brand.name=name;
+  brand.url=url;
+  brand.primary=document.getElementById('s-colorHex1').value;
+  brand.accent=document.getElementById('s-colorHex2').value;
+  applyBrand();
+  document.getElementById('setup').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.title=name+' — Reel Maker';
+}
+
+function applyBrand(){
+  // CSS vars
+  document.documentElement.style.setProperty('--brand-primary',brand.primary);
+  document.documentElement.style.setProperty('--brand-accent',brand.accent);
+  document.documentElement.style.setProperty('--brand-light',tintHex(brand.primary,0.85));
+  document.documentElement.style.setProperty('--brand-text-on-primary',lightenOrDarken(brand.primary));
+
+  // Header logo
+  document.getElementById('appLogo').textContent=brand.name;
+  document.getElementById('appLogo').style.color=brand.primary;
+
+  // Active tab styling
+  document.querySelectorAll('.tab.act').forEach(el=>{
+    el.style.background=brand.primary;
+    el.style.color=lightenOrDarken(brand.primary);
+  });
+  // Buttons .btn-primary
+  document.querySelectorAll('.btn-primary').forEach(el=>{
+    el.style.background=brand.primary;
+    el.style.color=lightenOrDarken(brand.primary);
+  });
+  // Header guide btn
+  const gl=document.getElementById('guideLink');
+  gl.style.background=brand.primary;
+  gl.style.color=lightenOrDarken(brand.primary);
+  gl.style.display='inline-flex';
+  // Active sbtn
+  document.querySelectorAll('.sbtn.act').forEach(el=>{
+    el.style.borderColor=brand.accent;
+    el.style.color=brand.accent;
+  });
+  // Badge
+  // Save label
+  document.getElementById('saveLabel').style.background=brand.primary;
+  document.getElementById('saveLabel').style.color=lightenOrDarken(brand.primary);
+  // Selected review highlight
+  updateBrandedDynamicStyles();
+  // Update show branding option text
+  document.querySelector('#showBrand option[value="1"]').textContent=`Yes — show ${brand.name} & URL`;
+}
+
+function updateBrandedDynamicStyles(){
+  let style=document.getElementById('brandStyle');
+  if(!style){style=document.createElement('style');style.id='brandStyle';document.head.appendChild(style);}
+  const p=brand.primary,a=brand.accent;
+  const textOnP=lightenOrDarken(p);
+  style.textContent=`
+    .ritem.sel{border-color:${a}!important;background:${tintHex(a,0.93)}!important}
+    .tab.act{background:${p}!important;color:${textOnP}!important}
+    .btn-primary{background:${p}!important;color:${textOnP}!important}
+    .sbtn.act{border-color:${a}!important;color:${a}!important;background:${tintHex(a,0.92)}!important}
+    textarea:focus,input[type=text]:focus{border-color:${a}!important}
+    .rname-input:focus{border-bottom-color:${a}!important}
+    .thumb.act{border-color:${a}!important}
+    .upzone:hover{border-color:${a}!important}
+    .csv-upzone:hover{border-color:${a}!important}
+    .pos-btn:hover{border-color:${a}!important;background:${tintHex(a,0.93)}!important}
+    .dl-template{color:${a}!important}
+    #parsedPreview{border-color:${a}!important}
+    .csv-row.ok{border-color:${a}!important;background:${tintHex(a,0.93)}!important}
+    .save-label{background:${p}!important;color:${textOnP}!important}
+    .save-label strong{color:${tintHex(p,0.6)}!important}
+    .header-btn.primary{background:${p}!important;color:${textOnP}!important}
+  `;
+}
+
+function tintHex(hex,amount){
+  // Mix hex with white by amount (0=original, 1=white)
+  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  const nr=Math.round(r+(255-r)*amount);
+  const ng=Math.round(g+(255-g)*amount);
+  const nb=Math.round(b+(255-b)*amount);
+  return`#${nr.toString(16).padStart(2,'0')}${ng.toString(16).padStart(2,'0')}${nb.toString(16).padStart(2,'0')}`;
+}
+
+// ── Settings (re-open setup) ───────────────────────────────
+function openSettings(){
+  // Pre-fill with current values
+  document.getElementById('s-companyName').value=brand.name;
+  document.getElementById('s-companyUrl').value=brand.url;
+  document.getElementById('s-colorPicker1').value=brand.primary;
+  document.getElementById('s-colorHex1').value=brand.primary;
+  document.getElementById('s-colorPicker2').value=brand.accent;
+  document.getElementById('s-colorHex2').value=brand.accent;
+  updateSetupPreview();
+  document.getElementById('setup').style.display='flex';
+}
+
+// ── Custom overlay colour ──────────────────────────────────
+document.getElementById('overlayColor').addEventListener('change',function(){
+  document.getElementById('customColorRow').style.display=this.value==='custom'?'block':'none';
+  renderPreview();
+});
+function syncCustomOverlayHex(){
+  let hex=document.getElementById('customOverlayHex').value.trim();
+  if(!hex.startsWith('#'))hex='#'+hex;
+  if(/^#[0-9a-fA-F]{6}$/.test(hex)){
+    document.getElementById('customOverlayColor').value=hex;
+    renderPreview();
+  }
+}
+document.getElementById('customOverlayColor').addEventListener('input',function(){
+  document.getElementById('customOverlayHex').value=this.value;
+  renderPreview();
+});
+
+// ── App state ──────────────────────────────────────────────
+const W=1080,H=1920;
+let reviews=[];
+let imageDataURLs=[],images=[],activeR=0,activeI=null,layout='bottom',currentStars=5;
+let parsedChunks=[],csvRows=[];
+let imgOffX=0,imgOffY=0,imgZoom=1,textNudge=0;
+let dragging=false,dragStartX=0,dragStartY=0,dragStartOffX=0,dragStartOffY=0;
+let dragHintTimer=null;
+
+const prevwrap=document.getElementById('prevwrap');
+
+// ── Drag & touch ───────────────────────────────────────────
+prevwrap.addEventListener('mousedown',e=>{if(activeI===null)return;dragging=true;dragStartX=e.clientX;dragStartY=e.clientY;dragStartOffX=imgOffX;dragStartOffY=imgOffY;e.preventDefault();});
+window.addEventListener('mousemove',e=>{if(!dragging)return;const r=prevwrap.getBoundingClientRect();imgOffX=dragStartOffX+(e.clientX-dragStartX)*(W/r.width);imgOffY=dragStartOffY+(e.clientY-dragStartY)*(H/r.height);clampOffset();renderPreview();hideDragHint();});
+window.addEventListener('mouseup',()=>{dragging=false;});
+prevwrap.addEventListener('touchstart',e=>{if(activeI===null||e.touches.length!==1)return;dragging=true;dragStartX=e.touches[0].clientX;dragStartY=e.touches[0].clientY;dragStartOffX=imgOffX;dragStartOffY=imgOffY;e.preventDefault();},{passive:false});
+window.addEventListener('touchmove',e=>{if(!dragging||e.touches.length!==1)return;const r=prevwrap.getBoundingClientRect();imgOffX=dragStartOffX+(e.touches[0].clientX-dragStartX)*(W/r.width);imgOffY=dragStartOffY+(e.touches[0].clientY-dragStartY)*(H/r.height);clampOffset();renderPreview();hideDragHint();},{passive:false});
+window.addEventListener('touchend',()=>{dragging=false;});
+prevwrap.addEventListener('wheel',e=>{if(activeI===null)return;e.preventDefault();imgZoom=Math.min(2.5,Math.max(1,imgZoom+(e.deltaY>0?-0.05:0.05)));document.getElementById('zoomSlider').value=Math.round(imgZoom*100);document.getElementById('zoomVal').textContent=Math.round(imgZoom*100)+'%';clampOffset();renderPreview();hideDragHint();},{passive:false});
+
+function clampOffset(){
+  if(activeI===null)return;
+  const img=images[activeI];const sc=Math.max(W/img.width,H/img.height)*imgZoom;
+  const sw=img.width*sc,sh=img.height*sc;
+  imgOffX=Math.max(-(sw-W)/2,Math.min((sw-W)/2,imgOffX));
+  imgOffY=Math.max(-(sh-H)/2,Math.min((sh-H)/2,imgOffY));
+}
+function nudge(dx,dy){imgOffX+=dx;imgOffY+=dy;clampOffset();renderPreview();hideDragHint();}
+function resetPosition(){imgOffX=0;imgOffY=0;imgZoom=1;document.getElementById('zoomSlider').value=100;document.getElementById('zoomVal').textContent='100%';renderPreview();}
+function hideDragHint(){document.getElementById('dragHint').classList.add('hidden');clearTimeout(dragHintTimer);}
+function onZoomSlider(){imgZoom=parseInt(document.getElementById('zoomSlider').value)/100;document.getElementById('zoomVal').textContent=Math.round(imgZoom*100)+'%';clampOffset();renderPreview();}
+function onTextNudge(){textNudge=parseInt(document.getElementById('textNudge').value);document.getElementById('textNudgeVal').textContent=textNudge>0?'+'+textNudge:textNudge;renderPreview();}
+
+// ── Tabs ───────────────────────────────────────────────────
+function switchTab(t){
+  ['single','bulk','csv'].forEach(id=>document.getElementById('tab-'+id).classList.toggle('act',id===t));
+  document.querySelectorAll('.tab').forEach(el=>el.classList.toggle('act',el.dataset.tab===t));
+  updateBrandedDynamicStyles();
+}
+
+// ── Stars ──────────────────────────────────────────────────
+function setStar(n){
+  currentStars=n;
+  document.querySelectorAll('#singleStars .sstar').forEach(b=>{b.style.color=parseInt(b.dataset.v)<=n?'#f4a400':'#ccc';});
+}
+setStar(5);
+
+// ── Review parsing ─────────────────────────────────────────
+function looksLikeCSVRow(raw){return /^"[^"]*","[^"]*"/.test(raw.trim());}
+function parseCSVRowAsReview(raw){
+  const fields=parseCSVLine(raw.trim());
+  const name=(fields[0]||'').trim();
+  const ratingRaw=(fields[1]||'').trim();
+  const starMatch=ratingRaw.match(/(\d+(?:\.\d+)?)/);
+  const stars=starMatch?Math.min(5,Math.max(1,Math.round(parseFloat(starMatch[1])))):5;
+  const text=(fields[3]||fields[2]||'').trim();
+  return{name,stars,text};
+}
+function parseOneReview(raw){
+  if(looksLikeCSVRow(raw))return parseCSVRowAsReview(raw);
+  let stars=5;
+  if(/★★★★★/.test(raw))stars=5;else if(/★★★★/.test(raw))stars=4;else if(/★★★/.test(raw))stars=3;else if(/★★/.test(raw))stars=2;else if(/★/.test(raw))stars=1;
+  const mS=raw.match(/(\d)\s*star/i);if(mS)stars=Math.min(5,Math.max(1,parseInt(mS[1])));
+  const mR=raw.match(/rated\s+(\d+(?:\.\d+)?)\s+out\s+of/i);if(mR)stars=Math.min(5,Math.max(1,Math.round(parseFloat(mR[1]))));
+  const datePat=/(\d+\s*(day|week|month|year|hour)s?\s*ago|\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}|jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/i;
+  const starLine=/^[★☆\s\d\/]+$/,metaLine=/^(local guide|google review|verified|translated|helpful|reply|like|recommended|top fan|following|see more|see translation|most relevant)/i;
+  const lines=raw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+  let name='';
+  for(let i=0;i<Math.min(lines.length,5);i++){const l=lines[i];if(starLine.test(l)||datePat.test(l)||metaLine.test(l))continue;if(l.length<50&&!/[.!?,;:"]/.test(l)&&/^[A-Z\u00C0-\u017E]/.test(l)){name=l;break;}}
+  const textLines=lines.filter(l=>!starLine.test(l)&&!datePat.test(l)&&!metaLine.test(l)&&l!==name&&l.length>10);
+  return{name,stars,text:textLines.join(' ').trim()};
+}
+
+function smartParse(){
+  const raw=document.getElementById('pasteBox').value;if(!raw.trim())return;
+  const p=parseOneReview(raw);
+  if(p.name)document.getElementById('reviewerName').value=p.name;setStar(p.stars);
+  const prev=document.getElementById('parsedPreview');prev.style.display='block';
+  prev.innerHTML=`<span style="color:${brand.accent};font-weight:500">Detected:</span> ${p.name?`<strong>${p.name}</strong>`:'name not found'} · ${'★'.repeat(p.stars)}`;
+}
+
+function addSingle(){
+  const raw=document.getElementById('pasteBox').value.trim();
+  const name=document.getElementById('reviewerName').value.trim()||'Guest';
+  if(!raw)return;
+  const p=parseOneReview(raw);const text=p.text||raw;if(text.length<5)return;
+  reviews.unshift({text,author:name,stars:currentStars});
+  clearSingle();activeR=0;renderList();renderPreview();
+}
+
+function clearSingle(){
+  document.getElementById('pasteBox').value='';
+  document.getElementById('reviewerName').value='';
+  document.getElementById('parsedPreview').style.display='none';
+  setStar(5);
+}
+
+function deleteReview(i){
+  reviews.splice(i,1);
+  if(activeR>=reviews.length)activeR=Math.max(0,reviews.length-1);
+  renderList();renderPreview();
+}
+
+// ── Bulk paste ─────────────────────────────────────────────
+function parseBulkPaste(){
+  const raw=document.getElementById('bulkPasteBox').value.trim();if(!raw)return;parsedChunks=[];
+  const lines=raw.replace(/\r\n/g,'\n').split('\n').filter(l=>l.trim());
+  const csvCount=lines.filter(l=>looksLikeCSVRow(l)).length;
+  if(csvCount>0&&csvCount>=lines.length*0.5){
+    for(const line of lines){if(!line.trim())continue;const p=looksLikeCSVRow(line)?parseCSVRowAsReview(line):parseOneReview(line);if(p.text&&p.text.length>10)parsedChunks.push(p);}
+    renderParsedChunks();return;
+  }
+  let blocks=raw.replace(/\r\n/g,'\n').split(/\n{2,}/);
+  if(blocks.length<=1){
+    const newBlocks=[];let current=[];
+    const datePat=/(\d+\s*(day|week|month|year|hour)s?\s*ago)/i,starLine=/^[★☆\s\d\/]+$/,metaLine=/^(local guide|google review|verified|recommended|top fan|see more|see translation|helpful|reply|like|following)/i;
+    for(const line of lines){const l=line.trim();const lln=l.length>1&&l.length<50&&/^[A-Z\u00C0-\u017E]/.test(l)&&!/[.!?,;:"]/.test(l)&&!starLine.test(l)&&!datePat.test(l)&&!metaLine.test(l);if(lln&&current.length>3){newBlocks.push(current.join('\n'));current=[l];}else current.push(l);}
+    if(current.length)newBlocks.push(current.join('\n'));if(newBlocks.length>1)blocks=newBlocks;
+  }
+  for(const block of blocks){if(block.trim().length<15)continue;const p=parseOneReview(block);if(p.text.length>10)parsedChunks.push(p);}
+  renderParsedChunks();
+}
+
+function renderParsedChunks(){
+  const el=document.getElementById('bulkParsedList'),addBtn=document.getElementById('addAllBtn');
+  if(!parsedChunks.length){el.innerHTML='<div style="font-size:12px;color:var(--color-text2);padding:6px 0">No reviews detected — try adding blank lines between reviews.</div>';addBtn.style.display='none';return;}
+  el.innerHTML=parsedChunks.map((r,i)=>`
+    <div class="parsed-chunk">
+      <div style="font-size:11px;color:${brand.accent};font-weight:500;margin-bottom:3px">${'★'.repeat(r.stars)}&nbsp;
+        <input value="${r.name||'Unknown'}" onchange="parsedChunks[${i}].name=this.value" style="border:none;background:transparent;font-size:11px;color:${brand.accent};font-family:inherit;font-weight:500;border-bottom:1px dashed ${brand.accent};width:140px;padding:0"/>
+      </div>
+      <div style="font-size:12px">"${r.text.length>100?r.text.slice(0,100)+'…':r.text}"</div>
+      <button onclick="deleteParsedChunk(${i})" title="Remove" style="position:absolute;top:6px;right:6px;background:none;border:none;cursor:pointer;font-size:14px;color:var(--color-text2);opacity:.4;line-height:1;padding:0">×</button>
+    </div>`).join('');
+  addBtn.style.display='flex';addBtn.innerHTML=`<i class="ti ti-plus"></i> Add all ${parsedChunks.length} review${parsedChunks.length!==1?'s':''} to list`;
+  updateBrandedDynamicStyles();
+}
+
+function deleteParsedChunk(i){parsedChunks.splice(i,1);renderParsedChunks();}
+
+function addAllParsed(){
+  parsedChunks.forEach(r=>{if(r.text.trim().length>5)reviews.unshift({text:r.text,author:r.name||'Guest',stars:r.stars});});
+  clearBulk();activeR=0;renderList();renderPreview();switchTab('single');
+}
+
+function clearBulk(){
+  document.getElementById('bulkPasteBox').value='';
+  document.getElementById('bulkParsedList').innerHTML='';
+  document.getElementById('addAllBtn').style.display='none';
+  parsedChunks=[];
+}
+
+// ── CSV ────────────────────────────────────────────────────
+function parseCSVLine(line){
+  const result=[];let inQuote=false,field='';
+  for(let i=0;i<line.length;i++){const ch=line[i];if(ch==='"'){if(inQuote&&line[i+1]==='"'){field+='"';i++;}else inQuote=!inQuote;}else if(ch===','&&!inQuote){result.push(field.trim());field='';}else field+=ch;}
+  result.push(field.trim());return result;
+}
+
+function downloadTemplate(){
+  const csv=`review text,stars,reviewer name\n"An absolutely incredible experience — the vehicle was perfectly equipped and the team were so helpful.",5,Sarah M.\n"Stunning scenery and a brilliant service. Highly recommend to anyone!",5,James T.\n"Outstanding communication from start to finish. Will definitely book again.",5,Emma R.\n`;
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='reviews-template.csv';a.click();
+}
+
+function handleCSV(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const text=ev.target.result;const lines=text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n').filter(l=>l.trim());
+    csvRows=[];const preview=document.getElementById('csvPreview');const addBtn=document.getElementById('addCSVBtn');preview.innerHTML='';
+    if(lines.length<2){addBtn.style.display='none';return;}
+    const header=parseCSVLine(lines[0]).map(h=>h.toLowerCase().trim());
+    const nameIdx=header.findIndex(h=>h==='name'||h==='reviewer name'||h==='reviewer');
+    const ratingIdx=header.findIndex(h=>h==='rating'||h==='stars'||h==='score');
+    const reviewIdx=header.findIndex(h=>h==='review'||h==='review text'||h==='content'||h==='text'||h==='comment');
+    let colName=2,colRating=1,colReview=0;
+    if(nameIdx>-1&&ratingIdx>-1&&reviewIdx>-1){colName=nameIdx;colRating=ratingIdx;colReview=reviewIdx;}
+    let skipped=0;
+    for(let i=1;i<lines.length;i++){
+      const fields=parseCSVLine(lines[i]);if(!fields.length||fields.every(f=>!f.trim()))continue;
+      const reviewText=(fields[colReview]||'').trim();
+      const ratingRaw=(fields[colRating]||'').trim();
+      const author=(fields[colName]||'Guest').trim()||'Guest';
+      const starMatch=ratingRaw.match(/(\d+(?:\.\d+)?)/);
+      const stars=starMatch?Math.min(5,Math.max(1,Math.round(parseFloat(starMatch[1])))):5;
+      if(!reviewText||reviewText.length<5){skipped++;continue;}
+      csvRows.push({text:reviewText,stars,author,ok:true});
+      const idx=csvRows.length-1;
+      preview.innerHTML+=`<div class="csv-row ok" id="csv-row-${idx}" style="grid-template-columns:1fr 44px 100px 20px">
+        <div class="csv-text" title="${reviewText}">${reviewText.length>65?reviewText.slice(0,65)+'…':reviewText}</div>
+        <div class="csv-stars">${'★'.repeat(stars)}</div>
+        <div class="csv-name">${author}</div>
+        <button onclick="deleteCSVRow(${idx})" style="background:none;border:none;cursor:pointer;font-size:14px;color:var(--color-text2);opacity:.4;padding:0;line-height:1">×</button>
+      </div>`;
+    }
+    const valid=csvRows.filter(r=>r.ok);
+    if(valid.length>0){
+      addBtn.style.display='flex';
+      addBtn.innerHTML=`<i class="ti ti-plus"></i> Add ${valid.length} review${valid.length!==1?'s':''} to list${skipped>0?` (${skipped} blank skipped)`:''}`;
+      document.getElementById('clearCSVBtn').style.display='flex';
+    }
+  };
+  reader.readAsText(file);e.target.value='';
+}
+
+function deleteCSVRow(i){
+  csvRows[i].ok=false;
+  const el=document.getElementById('csv-row-'+i);if(el)el.remove();
+  const valid=csvRows.filter(r=>r.ok);
+  const addBtn=document.getElementById('addCSVBtn');
+  if(valid.length>0)addBtn.innerHTML=`<i class="ti ti-plus"></i> Add ${valid.length} review${valid.length!==1?'s':''} to list`;
+  else addBtn.style.display='none';
+}
+
+function addAllCSV(){
+  csvRows.filter(r=>r.ok).forEach(r=>reviews.unshift({text:r.text,author:r.author,stars:r.stars}));
+  clearCSV();activeR=0;renderList();renderPreview();switchTab('single');
+}
+
+function clearCSV(){
+  csvRows=[];document.getElementById('csvPreview').innerHTML='';
+  document.getElementById('addCSVBtn').style.display='none';
+  document.getElementById('clearCSVBtn').style.display='none';
+  document.getElementById('csvInput').value='';
+}
+
+// ── Review list ────────────────────────────────────────────
+function renderList(){
+  document.getElementById('countBadge').textContent=reviews.length;
+  if(!reviews.length){document.getElementById('rlist').innerHTML='<div style="font-size:12px;color:var(--color-text2);padding:10px 4px;text-align:center">No reviews yet — add one above.</div>';return;}
+  document.getElementById('rlist').innerHTML=reviews.map((r,i)=>`
+    <div class="ritem${activeR===i?' sel':''}" id="ritem-${i}">
+      <div class="rmeta">
+        <span class="sg">${'★'.repeat(r.stars)}</span>
+        <input class="rname-input" value="${r.author.replace(/"/g,'&quot;')}" onchange="reviews[${i}].author=this.value;renderPreview()" title="Edit name"/>
+        <button class="edit-text-btn" onclick="toggleEditText(${i})" style="flex-shrink:0;background:none;border:none;cursor:pointer;color:var(--color-text2);font-size:12px;padding:0 3px;opacity:.5;line-height:1">✎</button>
+        <button class="del-btn" onclick="deleteReview(${i})" title="Delete" aria-label="Delete">×</button>
+      </div>
+      <div class="rtext" id="rtext-${i}" onclick="selectReview(${i})">"${r.text.length>85?r.text.slice(0,85)+'…':r.text}"</div>
+      <textarea class="redit" id="redit-${i}" style="display:none;width:100%;font-size:12px;font-family:inherit;border:0.5px solid ${brand.accent};border-radius:6px;padding:6px 8px;resize:vertical;min-height:70px;background:var(--color-bg);color:var(--color-text)" oninput="reviews[${i}].text=this.value;renderPreview()" onkeydown="if(event.key==='Escape')toggleEditText(${i})">${r.text.replace(/</g,'&lt;')}</textarea>
+    </div>`).join('');
+}
+
+function toggleEditText(i){
+  const textEl=document.getElementById('rtext-'+i);
+  const editEl=document.getElementById('redit-'+i);
+  const btn=document.querySelector(`#ritem-${i} .edit-text-btn`);
+  if(!textEl||!editEl||!btn)return;
+  const editing=editEl.style.display==='none';
+  editEl.style.display=editing?'block':'none';
+  textEl.style.display=editing?'none':'block';
+  btn.style.opacity=editing?'1':'0.5';
+  btn.style.color=editing?brand.accent:'var(--color-text2)';
+  if(editing){
+    activeR=i;
+    document.querySelectorAll('.ritem').forEach((el,idx)=>el.classList.toggle('sel',idx===i));
+    editEl.value=reviews[i].text;editEl.focus();renderPreview();
+  } else {
+    textEl.textContent=`"${reviews[i].text.length>85?reviews[i].text.slice(0,85)+'…':reviews[i].text}"`;
+  }
+}
+
+function selectReview(i){activeR=i;renderList();renderPreview();}
+
+// ── Images ─────────────────────────────────────────────────
+function handleImages(e){
+  Array.from(e.target.files).forEach(f=>{
+    const rd=new FileReader();
+    rd.onload=ev=>{const dataURL=ev.target.result;const img=new Image();img.onload=()=>{imageDataURLs.push(dataURL);images.push(img);renderThumbs();if(images.length===1){activeI=0;resetPosition();renderPreview();}};img.src=dataURL;};
+    rd.readAsDataURL(f);
+  });
+}
+function deleteImage(i){
+  images.splice(i,1);imageDataURLs.splice(i,1);
+  if(images.length===0)activeI=null;else if(activeI>=images.length)activeI=images.length-1;
+  if(activeI!==null)resetPosition();renderThumbs();renderPreview();
+}
+function renderThumbs(){
+  document.getElementById('photoBadge').textContent=images.length;
+  document.getElementById('thumbs').innerHTML=images.map((img,i)=>`
+    <div class="thumb-wrap">
+      <img src="${imageDataURLs[i]}" class="thumb${activeI===i?' act':''}" onclick="selImg(${i})" alt="photo ${i+1}" style="${activeI===i?'border-color:'+brand.accent:''}"/>
+      <button class="thumb-del" onclick="deleteImage(${i})" title="Remove" aria-label="Remove photo">×</button>
+    </div>`).join('');
+}
+function selImg(i){
+  activeI=i;resetPosition();renderThumbs();renderPreview();
+  const h=document.getElementById('dragHint');h.classList.remove('hidden');
+  clearTimeout(dragHintTimer);dragHintTimer=setTimeout(()=>h.classList.add('hidden'),2500);
+}
+function setLayout(l){layout=l;['bottom','center','top'].forEach(x=>document.getElementById('s-'+x).classList.toggle('act',x===l));renderPreview();}
+
+// ── Canvas ─────────────────────────────────────────────────
+function wrap(ctx,text,maxW){
+  const words=text.split(' ');let line='',lines=[];
+  for(const w of words){const tl=line+w+' ';if(ctx.measureText(tl).width>maxW&&line){lines.push(line.trim());line=w+' ';}else line=tl;}
+  if(line)lines.push(line.trim());return lines;
+}
+
+function getOverlayRgb(){
+  const v=document.getElementById('overlayColor').value;
+  if(v==='brand')return hexToRgb(brand.primary);
+  if(v==='slate')return '30,35,42';
+  if(v==='custom')return hexToRgb(document.getElementById('customOverlayColor').value);
+  return '0,0,0';
+}
+
+function getTextColors(){
+  const scheme=document.getElementById('textColorScheme').value;
+  if(scheme==='dark'){
+    return{quote:'#1a1a1a',author:'#333333',brand:'#1a1a1a',url:'#444444'};
+  }
+  return{quote:'#f0f0f0',author:'#cccccc',brand:'#ffffff',url:'#dddddd'};
+}
+
+function drawToCanvas(canvas,imgEl,review,offX,offY,zoom){
+  const ctx=canvas.getContext('2d');canvas.width=W;canvas.height=H;
+  if(!imgEl||!review)return false;
+  const sc=Math.max(W/imgEl.width,H/imgEl.height)*zoom;
+  const sw=imgEl.width*sc,sh=imgEl.height*sc;
+  ctx.drawImage(imgEl,(W-sw)/2+offX,(H-sh)/2+offY,sw,sh);
+
+  const op=parseInt(document.getElementById('opacity').value)/100;
+  const fs=parseInt(document.getElementById('fsize').value)*2;
+  const urlSizeScale=parseInt(document.getElementById('urlSize').value)/100;
+  const showB=document.getElementById('showBrand').value==='1';
+  const rgb=getOverlayRgb();
+  const tc=getTextColors();
+  const PAD=90,maxW=W-PAD*2;
+  ctx.font=`italic ${fs}px Georgia,serif`;
+  const lh=fs*1.55;
+  const qlines=wrap(ctx,`"${review.text}"`,maxW);
+  const brandNameSize=Math.round(fs*0.65);
+  const urlSize=Math.round(fs*0.65*urlSizeScale);
+  const brandH=showB?brandNameSize+urlSize+50:0;
+  const blockH=qlines.length*lh+fs*1.1+50+fs*1.2+30+brandH;
+
+  let oy;
+  if(layout==='bottom')oy=H-blockH-140;
+  else if(layout==='top')oy=140;
+  else oy=(H-blockH)/2;
+  oy+=textNudge;
+
+  const gpad=80;
+  const gr=ctx.createLinearGradient(0,oy-gpad,0,oy+blockH+gpad);
+  gr.addColorStop(0,`rgba(${rgb},0)`);gr.addColorStop(0.18,`rgba(${rgb},${op})`);
+  gr.addColorStop(0.82,`rgba(${rgb},${op})`);gr.addColorStop(1,`rgba(${rgb},0)`);
+  ctx.fillStyle=gr;ctx.fillRect(0,oy-gpad,W,blockH+gpad*2);
+
+  ctx.textAlign='center';
+  ctx.font=`italic ${fs}px Georgia,serif`;ctx.fillStyle=tc.quote;
+  let cy=oy;
+  qlines.forEach((l,i)=>ctx.fillText(l,W/2,cy+i*lh));
+  cy+=qlines.length*lh+40;
+
+  ctx.font=`${Math.round(fs*0.7)}px Georgia,serif`;ctx.fillStyle=tc.author;
+  ctx.fillText(`— ${review.author}`,W/2,cy);cy+=fs*1.1+20;
+
+  ctx.font=`${Math.round(fs*0.9)}px Arial`;ctx.fillStyle='#f4a400';
+  ctx.fillText('★'.repeat(review.stars),W/2,cy);cy+=fs*1.2+30;
+
+  if(showB){
+    ctx.font=`bold ${brandNameSize}px Georgia,serif`;ctx.fillStyle=tc.brand;
+    ctx.fillText(brand.name.toUpperCase(),W/2,cy);cy+=brandNameSize+14;
+    if(brand.url){
+      ctx.font=`${urlSize}px Georgia,serif`;ctx.fillStyle=tc.url;
+      ctx.fillText(brand.url,W/2,cy);
+    }
+  }
+  return true;
+}
+
+function renderPreview(){
+  const ph=document.getElementById('ph');
+  if(activeI===null||!reviews.length){ph.style.display='flex';return;}
+  ph.style.display='none';
+  drawToCanvas(document.getElementById('rc'),images[activeI],reviews[activeR],imgOffX,imgOffY,imgZoom);
+}
+
+function loadFreshImage(dataURL){return new Promise((res,rej)=>{const img=new Image();img.onload=()=>res(img);img.onerror=rej;img.src=dataURL;});}
+
+async function exportReel(){
+  const status=document.getElementById('statusMsg');const saveBox=document.getElementById('saveBox');
+  if(activeI===null){status.textContent='⚠ Upload a photo first.';return;}
+  if(!reviews.length){status.textContent='⚠ Add at least one review.';return;}
+  status.textContent='Generating…';saveBox.style.display='none';
+  try{
+    const img=await loadFreshImage(imageDataURLs[activeI]);images[activeI]=img;
+    const off=document.createElement('canvas');
+    drawToCanvas(off,img,reviews[activeR],imgOffX,imgOffY,imgZoom);
+    document.getElementById('saveImg').src=off.toDataURL('image/png');
+    saveBox.style.display='block';status.textContent='';
+    document.getElementById('saveImg').scrollIntoView({behavior:'smooth',block:'nearest'});
+  }catch(e){status.textContent='Error — try re-uploading the photo.';}
+}
+
+// ── Init ───────────────────────────────────────────────────
+updateSetupPreview();
+renderList();
+setTimeout(()=>document.getElementById('dragHint').classList.add('hidden'),3500);
+</script>
+</body>
+</html>
